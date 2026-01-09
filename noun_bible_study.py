@@ -7,15 +7,15 @@ import re
 STUDY_FOCUS = {
     "People": {
         "words": ["Peter", "John", "James", "Mary", "Moses", "Paul", "David"],
-        "color": "#FFD700",  # Gold
+        "color": "blue",
     },
     "Places": {
         "words": ["Jerusalem", "Galilee", "Bethlehem", "Jordan", "Egypt", "Zion", "Nazareth"],
-        "color": "#98FB98",  # Pale Green
+        "color": "green",
     },
     "God/Spirit": {
         "words": ["Jesus", "Christ" "God", "Lord", "Spirit", "Father", "Almighty"],
-        "color": "#FFC0CB",  # Pink
+        "color": "purple",
     }
 }
 
