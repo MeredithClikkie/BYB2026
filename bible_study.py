@@ -26,6 +26,15 @@ THEMES = {
     "Promises": {
         "keywords": ["will give", "inheritance", "peace", "not be shaken", "with you", "comfort"],
         "color": "#90EE90"  # Light Green
+    },
+    "People": {
+        "keywords": ["Isaiah", "God"],
+        "color": "#FFC0CB"
+
+    },
+    "Places": {
+        "keywords": ["Jerusalem"],
+        "color": "#FFC0CB"
     }
 }
 
