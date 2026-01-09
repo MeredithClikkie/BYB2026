@@ -27,7 +27,9 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "spirit"}]},
         {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
         {"label": "GOD", "pattern": [{"LOWER": "yahweh"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "one"}]},
 
+    # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
         {"label": "GPE", "pattern": [{"LOWER": "gomorrah"}]}
     ]
