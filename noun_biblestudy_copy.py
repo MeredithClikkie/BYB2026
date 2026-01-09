@@ -65,7 +65,7 @@ options = {
     "ents": ["GOD", "PERSON", "GPE"],
     "colors": {
         "GOD": "linear-gradient(90deg, 0%, #d7aapff99%)", # gradien purple
-        "PERSON": "4facfe",  # vibrant blue
+        "PERSON": "#4facfe",  # vibrant blue
         "GPE": "#98FB98"  # Pale Green (Places)
     }
 }
