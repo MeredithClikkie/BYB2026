@@ -57,6 +57,7 @@ def load_nlp():
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistines"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "syrians"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrian"}]},
 
 
     # Add patterns for the "GPE" category
@@ -135,7 +136,7 @@ options = {
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = [
     "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons",
-    "sabbaths", "woe", "behold"
+    "sabbaths", "woe", "behold", "alas assyrian"
 
 ]
 
