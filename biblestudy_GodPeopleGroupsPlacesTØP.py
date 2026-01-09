@@ -56,6 +56,8 @@ def load_nlp():
 
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistines"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "syrians"}]},
+
 
     # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
@@ -65,6 +67,7 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "shiloah"}]},
         {"label": "GPE", "pattern": [{"LOWER": "zebulon"}]},
         {"label": "GPE", "pattern": [{"LOWER": "galilee"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "manasseh"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
@@ -132,7 +135,7 @@ options = {
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = [
     "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons",
-    "sabbaths", "philistines", "woe", "behold"
+    "sabbaths", "woe", "behold"
 
 ]
 
