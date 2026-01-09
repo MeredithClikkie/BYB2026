@@ -26,6 +26,7 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "ghost"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "spirit"}]},
         {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "yahweh"}]},
     ]
 
     ruler.add_patterns(patterns)
