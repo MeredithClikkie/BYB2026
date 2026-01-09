@@ -41,6 +41,7 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "Immanuel"}]},
         {"label": "GOD", "pattern": [{"LOWER": "wonderful"}, {"LOWER": "counselor"}]},
         {"label": "GOD", "pattern": [{"LOWER": "mighty"}, {"LOWER": "god"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "mighty"}, {"LOWER": "one"}]},
         {"label": "GOD", "pattern": [{"LOWER": "everlasting"}, {"LOWER": "father"}, {"LOWER": "god"}]},
         {"label": "GOD", "pattern": [{"LOWER": "prince"}, {"LOWER": "of"}, {"LOWER": "peace"}]},
 
@@ -53,11 +54,13 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "tabeel"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "maher"}, {"LOWER": "shalal"}, {"LOWER": "hash"}, {"LOWER": "baz"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "uriah"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "gallim"}]},
 
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistines"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "syrians"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrian"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrians"}]},
 
 
     # Add patterns for the "GPE" category
@@ -69,6 +72,16 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "zebulon"}]},
         {"label": "GPE", "pattern": [{"LOWER": "galilee"}]},
         {"label": "GPE", "pattern": [{"LOWER": "manasseh"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "arpad"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "calna"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "carchemish"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "hamath"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "aiath"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "migron"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "michmash"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "ramah"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "gibeah"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "gebim"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
@@ -136,7 +149,7 @@ options = {
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = [
     "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons",
-    "sabbaths", "woe", "behold", "alas assyrian"
+    "sabbaths", "woe", "behold", "alas"
 
 ]
 
