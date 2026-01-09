@@ -15,8 +15,8 @@ def load_nlp():
     config = {"overwrite_ents": True}
     ruler = nlp.add_pipe("entity_ruler", before="ner", config=config)
 
-    # Define patterns for the "GOD" category
     patterns = [
+    # Define patterns for the "GOD" category
         {"label": "GOD", "pattern": [{"LOWER": "god"}]},
         {"label": "GOD", "pattern": [{"LOWER": "lord"}]},
         {"label": "GOD", "pattern": [{"LOWER": "jesus"}]},
@@ -32,9 +32,15 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "father"}]},
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "man"}]},
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "father"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "Immanuel"}]},
 
     # Add patterns for the "PERSON" category
         {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "ahaz"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "uzziah"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "pekah"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "remailiah's"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "tabeel"}]},
 
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistines"}]},
