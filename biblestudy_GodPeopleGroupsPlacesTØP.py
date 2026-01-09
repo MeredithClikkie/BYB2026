@@ -56,13 +56,26 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "maher"}, {"LOWER": "shalal"}, {"LOWER": "hash"}, {"LOWER": "baz"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "uriah"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "gallim"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "tamar"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "amminadab"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "hezron"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "nahshon"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "salmon"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "boaz"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "obed"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "rehoboam"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "abijah"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "asa"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "jehoshaphat"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "joram"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "shealtiel"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "babylon"}]},
 
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistine"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "syrians"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrian"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrians"}]},
-
 
     # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
@@ -84,6 +97,7 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "gibeah"}]},
         {"label": "GPE", "pattern": [{"LOWER": "gebim"}]},
         {"label": "GPE", "pattern": [{"LOWER": "the"}, {"LOWER": "egyptian"}, {"LOWER": "sea"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "babylon"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
