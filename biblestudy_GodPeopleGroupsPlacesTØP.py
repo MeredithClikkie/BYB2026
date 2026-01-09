@@ -96,7 +96,6 @@ st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
 
 st.title("🕊️ AI-Powered Bible Study")
 st.write("Using Natural Language Processing to identify Divine, People, Places, and TØP references.")
-st.selectbox("ESV")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
