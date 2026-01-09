@@ -29,17 +29,26 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "yahweh"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "one"}]},
 
+    # Add patterns for the "PERSON" category
+        {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
+
+    # Add patterns for the "PEOPLE GROUPS" category
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistines"}]},
+
     # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
-        {"label": "GPE", "pattern": [{"LOWER": "gomorrah"}]}
+        {"label": "GPE", "pattern": [{"LOWER": "gomorrah"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "zion"}]},
+
+    # Define patterns for the "TØP" category
+        {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]}
+
     ]
 
     ruler.add_patterns(patterns)
     return nlp
 
-
 nlp = load_nlp()
-
 
 # --- 2. DATA LAYER: Fetch from Bible API ---
 def get_bible_text(reference):
@@ -59,7 +68,7 @@ def get_bible_text(reference):
 st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
 
 st.title("🕊️ AI-Powered Bible Study")
-st.write("Using Natural Language Processing to identify People, Places, and Divine references.")
+st.write("Using Natural Language Processing to identify Divine, People, Places, and TØP references.")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
@@ -68,11 +77,13 @@ show_stats = st.sidebar.checkbox("Show Entity Stats", value=True)
 
 # Styling for the highlights
 options = {
-    "ents": ["GOD", "PERSON", "GPE"],
+    "ents": ["GOD", "PERSON", "GPE", "TØP"],
     "colors": {
-        "GOD": "purple", # gradient purple
+        "GOD": "purple",
         "PERSON": "#4facfe",  # vibrant blue
-        "GPE": "#98FB98"  # Pale Green (Places)
+        "PEOPLE GROUP": "blue",
+        "GPE": "#98FB98",  # Pale Green (Places)
+        "TØP": "red"
     }
 }
 
