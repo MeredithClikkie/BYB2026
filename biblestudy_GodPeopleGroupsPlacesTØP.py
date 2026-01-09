@@ -127,7 +127,8 @@ options = {
 # BLACKLIST: Add words here that you want the AI to STOP highlighting
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = [
-    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "woe", "behold"
+    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "woe", "behold",
+    "zebulon"
 ]
 
 if st.sidebar.button("Analyze Scripture"):
