@@ -3,6 +3,12 @@ import requests
 import spacy
 from spacy import displacy
 
+# Widget,Use Case
+# st.text_input,Enter verse references or names.
+# st.selectbox,"Choose between Bible versions (KJV, WEB, etc.)."
+# st.file_uploader,Upload a PDF of a sermon to analyze.
+# st.download_button,Save your highlighted study as a text file.
+# st.camera_input,Take a photo of a physical Bible page to OCR (convert to text).
 
 # --- 1. THE AI BRAIN: Load spaCy with Custom Theological Rules ---
 @st.cache_resource
@@ -86,6 +92,7 @@ st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
 
 st.title("🕊️ AI-Powered Bible Study")
 st.write("Using Natural Language Processing to identify Divine, People, Places, and TØP references.")
+st.selectbox("ESV")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
