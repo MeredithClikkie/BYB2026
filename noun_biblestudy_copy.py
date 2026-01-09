@@ -78,14 +78,30 @@ options = {
 
 # BLACKLIST: Add words here that you want the AI to STOP highlighting
 # (Case sensitive usually, so add variations if needed)
-BLACKLIST = ["Faith", "Grace", "Learn", "Seek", "Relieve" "Amen", "Life", "New Moons", "Sabbaths"]
+BLACKLIST = [
+    "Faith", "Grace", "Learn", "Seek", "Relieve" "Amen", "Life", "New Moons", "Sabbaths"
+]
 
 if st.sidebar.button("Analyze Scripture"):
     raw_text = get_bible_text(ref)
 
     if raw_text:
-        # Process text through the AI pipeline
+        # Process the text through the AI pipeline
         doc = nlp(raw_text)
+
+        # --- FILTERING LOGIC ---
+        # We create a new list of entities that excludes the blacklist
+        filtered_ents = []
+        for ent in doc.ents:
+            # Clean the text and make it lowercase for comparison
+            clean_entity_text = ent.text.strip().lower()
+
+            # If the word is NOT in our blacklist AND it's a category we care about
+            if clean_entity_text not in BLACKLIST and ent.label_ in options["ents"]:
+                filtered_ents.append(ent)
+
+        # Tell the AI document to use our filtered list instead of its original list
+        doc.ents = filtered_ents
 
         # --- Stats Section ---
         if show_stats:
