@@ -27,6 +27,9 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "spirit"}]},
         {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
         {"label": "GOD", "pattern": [{"LOWER": "yahweh"}]},
+
+        {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "gomorrah"}]}
     ]
 
     ruler.add_patterns(patterns)
@@ -70,6 +73,10 @@ options = {
         "GPE": "#98FB98"  # Pale Green (Places)
     }
 }
+
+# BLACKLIST: Add words here that you want the AI to STOP highlighting
+# (Case sensitive usually, so add variations if needed)
+BLACKLIST = ["Faith", "Grace", "Learn", "Seek", "Relieve" "Amen", "Life"]
 
 if st.sidebar.button("Analyze Scripture"):
     raw_text = get_bible_text(ref)
