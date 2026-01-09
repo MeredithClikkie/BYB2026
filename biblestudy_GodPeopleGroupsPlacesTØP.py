@@ -39,7 +39,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "ahaz"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "uzziah"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "pekah"}]},
-        {"label": "PERSON", "pattern": [{"LOWER": "remailiah's"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "remaliah's"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "tabeel"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "maher"}, {"LOWER": "shalal"}, {"LOWER": "hash"}, {"LOWER": "baz"}]},
 
@@ -51,6 +51,7 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "gomorrah"}]},
         {"label": "GPE", "pattern": [{"LOWER": "zion"}]},
         {"label": "GPE", "pattern": [{"LOWER": "ephraim"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "shiloah"}]},
 
     # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]}
