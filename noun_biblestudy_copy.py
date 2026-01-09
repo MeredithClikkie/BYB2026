@@ -4,45 +4,108 @@ import spacy
 from spacy import displacy
 
 
-# Load the AI model
-# we use @st.cache_resource so it only loads once (saves memory)
+# --- 1. THE AI BRAIN: Load spaCy with Custom Theological Rules ---
 @st.cache_resource
 def load_nlp():
-    return spacy.load("en_core_web_sm")
+    # Load the base English model
+    nlp = spacy.load("en_core_web_sm")
+
+    # Create the EntityRuler to define custom categories
+    # overwrite_ents=True ensures our "GOD" label takes priority over generic labels
+    config = {"overwrite_ents": True}
+    ruler = nlp.add_pipe("entity_ruler", before="ner", config=config)
+
+    # Define patterns for the "GOD" category
+    patterns = [
+        {"label": "GOD", "pattern": [{"LOWER": "god"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "lord"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "jesus"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "christ"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "spirit"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "father"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "ghost"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "spirit"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
+    ]
+
+    ruler.add_patterns(patterns)
+    return nlp
 
 
 nlp = load_nlp()
 
 
-# --- API Fetcher ---
+# --- 2. DATA LAYER: Fetch from Bible API ---
 def get_bible_text(reference):
-    url = f"https://bible-api.com/{reference}"
-    response = requests.get(url)
-    return response.json()['text'] if response.status_code == 200 else None
+    try:
+        url = f"https://bible-api.com/{reference}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()['text']
+        else:
+            return None
+    except Exception as e:
+        st.error(f"Connection error: {e}")
+        return None
 
 
-# --- UI Setup ---
-st.set_page_config(page_title="AI Bible Study", layout="wide")
-st.title("🤖 AI Named Entity Recognition (NER) Bible Study")
-st.write("The AI will automatically find **People (PERSON)** and **Places (GPE)**.")
+# --- 3. UI LAYER: Streamlit Dashboard ---
+st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
 
-ref = st.text_input("Enter Reference (e.g., Genesis 1 or Acts 2):", "Genesis 1")
+st.title("🕊️ AI-Powered Bible Study")
+st.write("Using Natural Language Processing to identify People, Places, and Divine references.")
 
-if st.button("Analyze with AI"):
+# Sidebar Settings
+st.sidebar.header("Settings")
+ref = st.sidebar.text_input("Enter Reference:", "John 1:1-18")
+show_stats = st.sidebar.checkbox("Show Entity Stats", value=True)
+
+# Styling for the highlights
+options = {
+    "ents": ["GOD", "PERSON", "GPE"],
+    "colors": {
+        "GOD": "linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%)",  # Pink/Soft Red
+        "PERSON": "#FFD700",  # Gold
+        "GPE": "#98FB98"  # Pale Green (Places)
+    }
+}
+
+if st.sidebar.button("Analyze Scripture"):
     raw_text = get_bible_text(ref)
 
     if raw_text:
-        # The AI "reads" the whole text here
+        # Process text through the AI pipeline
         doc = nlp(raw_text)
 
-        # We tell spaCy to only highlight God Persons and Locations (GPE)
-        options = {"ents": ["GOD", "PERSON", "GPE"],
-                   "colors": {"GOD": "purple", "PERSON": "blue", "GPE": "green"}}
+        # --- Stats Section ---
+        if show_stats:
+            counts = doc.count_by(spacy.attrs.IDS['ENT_TYPE'])
+            st.subheader("Summary Stats")
+            col1, col2, col3 = st.columns(3)
 
-        # Generate the professional HTML visualizer
+
+            # Helper to get count for a label
+            def get_count(label):
+                label_id = nlp.vocab.strings[label]
+                return counts.get(label_id, 0)
+
+
+            col1.metric("Divine References", get_count("GOD"))
+            col2.metric("People Found", get_count("PERSON"))
+            col3.metric("Places Found", get_count("GPE"))
+            st.divider()
+
+        # --- Main Text Display ---
+        st.subheader(f"Scripture Text: {ref}")
+
+        # Generate the HTML using displacy
         html = displacy.render(doc, style="ent", options=options)
 
-        # Display in Streamlit
+        # Streamlit needs 'unsafe_allow_html' to render the colored spans
         st.markdown(html, unsafe_allow_html=True)
+
     else:
-        st.error("Text not found.")
+        st.error("Could not fetch that reference. Please check the format (e.g., 'John 3:16' or 'Genesis 1').")
+
+# --- Footer Info ---
+st.info("Note: 'GPE' stands for Geopolitical Entity (Places/Locations).")
