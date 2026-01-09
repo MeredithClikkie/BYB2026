@@ -41,6 +41,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "pekah"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "remailiah's"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "tabeel"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "Maher Shalal Hash Baz"}]},
 
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistines"}]},
@@ -49,6 +50,7 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
         {"label": "GPE", "pattern": [{"LOWER": "gomorrah"}]},
         {"label": "GPE", "pattern": [{"LOWER": "zion"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "ephraim"}]},
 
     # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]}
