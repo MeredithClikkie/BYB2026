@@ -74,18 +74,22 @@ def load_nlp():
 nlp = load_nlp()
 
 # --- 2. DATA LAYER: Fetch from Bible API ---
-def get_bible_text(reference):
+def get_bible_text(reference, trans="web"):
     try:
-        url = f"https://bible-api.com/{reference}"
+        # We add the translation as a 'query parameter' to the end of the URL
+        url = f"https://bible-api.com/{reference}?translation={trans}"
         response = requests.get(url)
+
         if response.status_code == 200:
             return response.json()['text']
         else:
+            # This handles cases where the verse doesn't exist (e.g., "John 50:1")
             return None
+
     except Exception as e:
+        # This handles internet connection issues
         st.error(f"Connection error: {e}")
         return None
-
 
 # --- 3. UI LAYER: Streamlit Dashboard ---
 st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
@@ -98,6 +102,16 @@ st.selectbox("ESV")
 st.sidebar.header("Settings")
 ref = st.sidebar.text_input("Enter Reference:", "John 1:1-18")
 show_stats = st.sidebar.checkbox("Show Entity Stats", value=True)
+
+st.sidebar.header("Translation")
+# We use a dictionary so the user sees "King James" but the code uses "kjv"
+versions = {
+    "World English Bible": "web",
+    "King James Version": "kjv",
+    "Bible in Basic English": "bbe"
+}
+selected_display_name = st.sidebar.selectbox("Version:", list(versions.keys()))
+translation_code = versions[selected_display_name]
 
 # Styling for the highlights
 options = {
