@@ -68,7 +68,7 @@ show_stats = st.sidebar.checkbox("Show Entity Stats", value=True)
 options = {
     "ents": ["GOD", "PERSON", "GPE"],
     "colors": {
-        "GOD": "linear-gradient(90deg, 0%, #d7aapff99%)", # gradien purple
+        "GOD": "purple", # gradient purple
         "PERSON": "#4facfe",  # vibrant blue
         "GPE": "#98FB98"  # Pale Green (Places)
     }
