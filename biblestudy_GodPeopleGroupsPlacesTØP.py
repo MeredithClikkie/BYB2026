@@ -28,7 +28,10 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
         {"label": "GOD", "pattern": [{"LOWER": "yahweh"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "one"}]},
-        {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of the father"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "god"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "father"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "man"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "father"}]},
 
     # Add patterns for the "PERSON" category
         {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
@@ -91,7 +94,7 @@ options = {
 # BLACKLIST: Add words here that you want the AI to STOP highlighting
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = [
-    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines"
+    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "woe", "behold"
 ]
 
 if st.sidebar.button("Analyze Scripture"):
