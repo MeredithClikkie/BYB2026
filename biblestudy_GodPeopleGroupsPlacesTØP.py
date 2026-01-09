@@ -28,6 +28,7 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
         {"label": "GOD", "pattern": [{"LOWER": "yahweh"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "one"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of the father"}]},
 
     # Add patterns for the "PERSON" category
         {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
