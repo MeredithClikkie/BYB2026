@@ -78,6 +78,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "eleazer"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "eliakim"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "achim"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "herod"}]},
 
 
     # Add patterns for the "PEOPLE GROUPS" category
@@ -85,6 +86,9 @@ def load_nlp():
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "syrians"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrian"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "assyrians"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "jews"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "the"}, {"LOWER": "jews"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "jew"}]},
 
     # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
@@ -107,6 +111,7 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "gebim"}]},
         {"label": "GPE", "pattern": [{"LOWER": "the"}, {"LOWER": "egyptian"}, {"LOWER": "sea"}]},
         {"label": "GPE", "pattern": [{"LOWER": "babylon"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "judea"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
