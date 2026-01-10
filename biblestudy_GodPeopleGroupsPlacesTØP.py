@@ -182,8 +182,7 @@ options = {
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = [
     "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons",
-    "sabbaths", "woe", "behold", "alas"
-
+    "sabbaths", "woe", "behold", "alas", "myrrh"
 ]
 
 if st.sidebar.button("Analyze Scripture"):
