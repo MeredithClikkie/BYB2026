@@ -47,6 +47,7 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "mighty"}, {"LOWER": "one"}]},
         {"label": "GOD", "pattern": [{"LOWER": "everlasting"}, {"LOWER": "father"}, {"LOWER": "god"}]},
         {"label": "GOD", "pattern": [{"LOWER": "prince"}, {"LOWER": "of"}, {"LOWER": "peace"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "king"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER":"jews"}]},
 
     # Add patterns for the "PERSON" category
         {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
