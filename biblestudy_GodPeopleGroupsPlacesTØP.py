@@ -24,11 +24,13 @@ def load_nlp():
     patterns = [
     # Define patterns for the "GOD" category
         {"label": "GOD", "pattern": [{"LOWER": "god"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "god"}, {"LOWER": "the"}, {"LOWER": "father"}]},
         {"label": "GOD", "pattern": [{"LOWER": "lord"}]},
         {"label": "GOD", "pattern": [{"LOWER": "jesus"}]},
         {"label": "GOD", "pattern": [{"LOWER": "christ"}]},
         {"label": "GOD", "pattern": [{"LOWER": "spirit"}]},
-        {"label": "GOD", "pattern": [{"LOWER": "father"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "father"}, {"LOWER": "god"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "father"}, {"LOWER": "son"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "ghost"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "spirit"}]},
         {"label": "GOD", "pattern": [{"LOWER": "savior"}]},
@@ -69,7 +71,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "jehoshaphat"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "joram"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "shealtiel"}]},
-        {"label": "GPE", "pattern": [{"LOWER": "babylon"}]},
+
 
     # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistine"}]},
