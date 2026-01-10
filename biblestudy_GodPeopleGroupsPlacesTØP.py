@@ -77,6 +77,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "eliud"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "eleazer"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "eliakim"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "achim"}]},
 
 
     # Add patterns for the "PEOPLE GROUPS" category
