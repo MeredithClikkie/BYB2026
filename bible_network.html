@@ -33,8 +33,8 @@
 
              #mynetwork {
                  width: 100%;
-                 height: 600px;
-                 background-color: #ffffff;
+                 height: 500px;
+                 background-color: #eeeeee;
                  border: 1px solid lightgray;
                  position: relative;
                  float: left;
@@ -88,8 +88,8 @@
                   
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#FFD700", "font": {"color": "black"}, "id": "Isaiah", "label": "Isaiah", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Jotham", "label": "Jotham", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Hezekiah", "label": "Hezekiah", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#98FB98", "font": {"color": "black"}, "id": "Jerusalem", "label": "Jerusalem", "shape": "dot", "size": 10, "title": "GPE"}, {"color": "#98FB98", "font": {"color": "black"}, "id": "Judah", "label": "Judah", "shape": "dot", "size": 10, "title": "GPE"}, {"color": "#98FB98", "font": {"color": "black"}, "id": "Israel", "label": "Israel", "shape": "dot", "size": 10, "title": "GPE"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Yahweh", "label": "Yahweh", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Relieve", "label": "Relieve", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Seek", "label": "Seek", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Gomorrah", "label": "Gomorrah", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#FFD700", "font": {"color": "black"}, "id": "Sabbaths", "label": "Sabbaths", "shape": "dot", "size": 10, "title": "PERSON"}, {"color": "#98FB98", "font": {"color": "black"}, "id": "New Moons", "label": "New Moons", "shape": "dot", "size": 10, "title": "GPE"}]);
-                  edges = new vis.DataSet([{"color": "#888888", "from": "Isaiah", "to": "Jotham", "width": 1}, {"color": "#888888", "from": "Isaiah", "to": "Hezekiah", "width": 1}, {"color": "#888888", "from": "Isaiah", "to": "Jerusalem", "width": 1}, {"color": "#888888", "from": "Isaiah", "to": "Judah", "width": 1}, {"color": "#888888", "from": "Jotham", "to": "Hezekiah", "width": 1}, {"color": "#888888", "from": "Jotham", "to": "Jerusalem", "width": 1}, {"color": "#888888", "from": "Jotham", "to": "Judah", "width": 1}, {"color": "#888888", "from": "Hezekiah", "to": "Jerusalem", "width": 1}, {"color": "#888888", "from": "Hezekiah", "to": "Judah", "width": 1}, {"color": "#888888", "from": "Jerusalem", "to": "Judah", "width": 1}, {"color": "#888888", "from": "Israel", "to": "Yahweh", "width": 1}, {"color": "#888888", "from": "Relieve", "to": "Seek", "width": 1}]);
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "black"}, "id": "Jesus", "label": "Jesus", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Galilee", "label": "Galilee", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "Peter", "label": "Peter", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "black"}, "id": "John", "label": "John", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "Jesus", "to": "Galilee", "width": 2}, {"from": "Jesus", "to": "Peter", "width": 1}, {"from": "Galilee", "to": "Peter", "width": 2}, {"from": "Galilee", "to": "John", "width": 1}, {"from": "Peter", "to": "John", "width": 1}]);
 
                   nodeColors = {};
                   allNodes = nodes.get({ returnType: "Object" });
