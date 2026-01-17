@@ -138,18 +138,24 @@ def load_nlp():
 
 nlp = load_nlp()
 
-text = "His brother's name was Jubal."
 
-# Map specific phrases to their highlighted versions
-# (Assuming blue = Person, green = Place)
-replacements = {
-    "brother's name was Jubal": "brother's name was \033[94mJubal\033[0m"
-}
+text = "Israel wrestled with God, then his descendants lived in Israel."
+doc = nlp(text)
 
-for original, highlighted in replacements.items():
-    text = text.replace(original, highlighted)
+highlighted_text = ""
 
-print(text)
+for token in doc:
+    # Check if the word is part of an entity
+    if token.ent_type_ == "PERSON":
+        highlighted_text += f"**{token.text}** (Person) "
+    elif token.ent_type_ == "GPE":
+        highlighted_text += f"_{token.text}_ (Place) "
+    else:
+        highlighted_text += token.text + " "
+
+print(highlighted_text.strip())
+
+
 
 # --- 2. DATA LAYER: Fetch from Bible API ---
 def get_bible_text(reference, trans="web"):
