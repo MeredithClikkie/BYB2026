@@ -157,95 +157,49 @@ def load_nlp():
 nlp = load_nlp()
 
 
-text = "Israel wrestled with God, then his descendants lived in Israel."
-doc = nlp(text)
-
-highlighted_text = ""
-
-for token in doc:
-    # Check if the word is part of an entity
-    if token.ent_type_ == "PERSON":
-        highlighted_text += f"**{token.text}** (Person) "
-    elif token.ent_type_ == "GPE":
-        highlighted_text += f"_{token.text}_ (Place) "
-    else:
-        highlighted_text += token.text + " "
-
-print(highlighted_text.strip())
-
-
 # --- 2. DATA LAYER: Fetch from Bible API ---
 def get_bible_text(reference, trans="web"):
     try:
-        # We add the translation as a 'query parameter' to the end of the URL
         url = f"https://bible-api.com/{reference}?translation={trans}"
         response = requests.get(url)
-
         if response.status_code == 200:
             return response.json()['text']
         else:
-            # This handles cases where the verse doesn't exist (e.g., "John 50:1")
             return None
-
     except Exception as e:
-        # This handles internet connection issues
         st.error(f"Connection error: {e}")
         return None
 
-# --- Timeline Visualization ---
-events = get_timeline_data(ref)
-if events:
-    st.subheader("⏳ Scriptural Timeline")
-    df = pd.DataFrame(events)
 
-    # 1. Create the figure with a line connecting the dots
-    fig = px.line(df, x="Date", y=[0] * len(df),
-                  markers=True,
-                  text="Event",
-                  title=f"Historical Context: {ref.split()[0]}")
-
-    # 2. Add "Stems" (Vertical lines for each event)
-    # This loops through each date and adds a vertical line from the axis to the point
-    for i in range(len(df)):
-        fig.add_shape(type='line',
-                      x0=df['Date'].iloc[i], y0=-0.1,
-                      x1=df['Date'].iloc[i], y1=0,
-                      line=dict(color="grey", width=1, dash="dot"))
-
-    # 3. Styling the Markers and Text
-    fig.update_traces(
-        textposition='top center',
-        marker=dict(size=12, color='#7030a0', symbol='diamond'),
-        line=dict(color='#7030a0', width=2),
-        textfont=dict(size=10)
-    )
-
-    # 4. Clean up the Axes (Hide Y-axis, style X-axis)
-    fig.update_yaxes(visible=False, range=[-0.5, 0.5])
-    fig.update_xaxes(
-        showgrid=True,
-        gridcolor='LightGrey',
-        title="Year (BC < 0 > AD)",
-        zeroline=True,
-        zerolinecolor='black',
-        zerolinewidth=2
-    )
-
-    # 5. General Layout Adjustments
-    fig.update_layout(
-        height=300,
-        margin=dict(l=40, r=40, t=60, b=40),
-        plot_bgcolor='rgba(0,0,0,0)' # Transparent background
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+def get_timeline_data(reference):
+    timeline_db = {
+        "Genesis": [
+            {"Event": "Creation/Fall", "Date": -4000},
+            {"Event": "The Flood", "Date": -2400},
+            {"Event": "Call of Abraham", "Date": -2091},
+            {"Event": "Joseph in Egypt", "Date": -1898}
+        ],
+        "Exodus": [
+            {"Event": "Birth of Moses", "Date": -1526},
+            {"Event": "The Exodus", "Date": -1446},
+            {"Event": "Ten Commandments", "Date": -1445}
+        ],
+        "John": [
+            {"Event": "Birth of Jesus", "Date": -4},
+            {"Event": "Baptism of Jesus", "Date": 26},
+            {"Event": "Crucifixion/Resurrection", "Date": 30}
+        ]
+    }
+    book_name = reference.split()[0]
+    return timeline_db.get(book_name, [])
 
 
 # --- 3. UI LAYER: Streamlit Dashboard ---
+# Move page config to the VERY TOP of the UI layer
 st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
 
 st.title("🕊️ AI-Powered Bible Study")
-st.write("Using Natural Language Processing to identify Divine, People, Places, and TØP references.")
+st.write("Using NLP to identify Divine, People, Places, and TØP references.")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
@@ -253,56 +207,54 @@ ref = st.sidebar.text_input("Enter Reference:", "John 1:1-18")
 show_stats = st.sidebar.checkbox("Show Entity Stats", value=True)
 
 st.sidebar.header("Translation")
-# We use a dictionary so the user sees "King James" but the code uses "kjv"
-versions = {
-    "World English Bible": "web",
-    "King James Version": "kjv",
-    "Bible in Basic English": "bbe"
-}
+versions = {"World English Bible": "web", "King James Version": "kjv", "Bible in Basic English": "bbe"}
 selected_display_name = st.sidebar.selectbox("Version:", list(versions.keys()))
 translation_code = versions[selected_display_name]
 
-# Styling for the highlights
 options = {
     "ents": ["GOD", "PERSON", "GPE", "TØP"],
-    "colors": {
-        "GOD": "purple",
-        "PERSON": "#4facfe",  # vibrant blue
-        "PEOPLE GROUP": "blue",
-        "GPE": "#98FB98",  # Pale Green (Places)
-        "TØP": "red"
-    }
+    "colors": {"GOD": "purple", "PERSON": "#4facfe", "GPE": "#98FB98", "TØP": "red"}
 }
 
-# BLACKLIST: Add words here that you want the AI to STOP highlighting
-# (Case sensitive usually, so add variations if needed)
-BLACKLIST = [
-    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons",
-    "sabbaths", "woe", "behold", "alas", "myrrh"
-]
+BLACKLIST = ["faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "woe", "behold",
+             "alas", "myrrh"]
 
+# --- MAIN LOGIC BLOCK ---
 if st.sidebar.button("Analyze Scripture"):
-    raw_text = get_bible_text(ref)
+    raw_text = get_bible_text(ref, trans=translation_code)
 
     if raw_text:
-        # Process the text through the AI pipeline
         doc = nlp(raw_text)
 
-        # --- FILTERING LOGIC ---
-        # We create a new list of entities that excludes the blacklist
+        # Filtering logic
         filtered_ents = []
         for ent in doc.ents:
-            # Clean the text and make it lowercase for comparison
             clean_entity_text = ent.text.strip().lower()
-
-            # If the word is NOT in our blacklist AND it's a category we care about
             if clean_entity_text not in BLACKLIST and ent.label_ in options["ents"]:
                 filtered_ents.append(ent)
-
-        # Tell the AI document to use our filtered list instead of its original list
         doc.ents = filtered_ents
 
-        # --- Timeline Section ---
+        # --- NEW & IMPROVED TIMELINE VISUALIZATION ---
+        events = get_timeline_data(ref)
+        if events:
+            st.subheader(f"⏳ Historical Timeline: {ref.split()[0]}")
+            df = pd.DataFrame(events)
+
+            # Create line with markers
+            fig = px.line(df, x="Date", y=[0] * len(df), markers=True, text="Event")
+
+            # Add vertical stems
+            for i in range(len(df)):
+                fig.add_shape(type='line', x0=df['Date'].iloc[i], y0=-0.1, x1=df['Date'].iloc[i], y1=0,
+                              line=dict(color="grey", width=1, dash="dot"))
+
+            fig.update_traces(textposition='top center', marker=dict(size=12, color='#7030a0', symbol='diamond'))
+            fig.update_yaxes(visible=False, range=[-0.5, 0.5])
+            fig.update_xaxes(showgrid=True, title="Year (BC < 0 > AD)", zeroline=True, zerolinecolor='black')
+            fig.update_layout(height=300, margin=dict(l=40, r=40, t=20, b=40), plot_bgcolor='rgba(0,0,0,0)')
+
+            st.plotly_chart(fig, use_container_width=True)
+            st.divider()
 
         # --- Stats Section ---
         if show_stats:
@@ -311,44 +263,21 @@ if st.sidebar.button("Analyze Scripture"):
             col1, col2, col3 = st.columns(3)
 
 
-            # Helper to get count for a label
             def get_count(label):
-                label_id = nlp.vocab.strings[label]
-                return counts.get(label_id, 0)
+                label_id = nlp.vocab.strings.get(label)
+                return counts.get(label_id, 0) if label_id else 0
 
 
-            col1.metric("Divine References", get_count("GOD"))
-            col2.metric("People Found", get_count("PERSON"))
-            col3.metric("Places Found", get_count("GPE"))
+            col1.metric("Divine", get_count("GOD"))
+            col2.metric("People", get_count("PERSON"))
+            col3.metric("Places", get_count("GPE"))
             st.divider()
-
-        # --- Timeline Visualization ---
-        events = get_timeline_data(ref)
-        if events:
-            st.subheader("⏳ Scriptural Timeline")
-            df = pd.DataFrame(events)
-
-            # Create a clean horizontal timeline
-            fig = px.scatter(df, x="Date", y=[0] * len(df), text="Event",
-                             title=f"Historical Context for {ref}")
-
-            fig.update_traces(textposition='top center', marker=dict(size=15, color='#7030a0'))
-            fig.update_yaxes(visible=False, showgrid=False, zeroline=False)
-            fig.update_layout(height=250, margin=dict(l=20, r=20, t=40, b=20))
-
-            st.plotly_chart(fig, use_container_width=True)
 
         # --- Main Text Display ---
         st.subheader(f"Scripture Text: {ref}")
-
-        # Generate the HTML using displacy
         html = displacy.render(doc, style="ent", options=options)
-
-        # Streamlit needs 'unsafe_allow_html' to render the colored spans
         st.markdown(html, unsafe_allow_html=True)
-
     else:
-        st.error("Could not fetch that reference. Please check the format (e.g., 'John 3:16' or 'Genesis 1').")
+        st.error("Could not fetch that reference. Please check the format.")
 
-# --- Footer Info ---
 st.info("Note: 'GPE' stands for Geopolitical Entity (Places/Locations).")
