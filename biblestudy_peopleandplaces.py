@@ -136,12 +136,12 @@ def load_nlp():
 
 nlp = load_nlp()
 
-text = "His brother's name was Jabal."
+text = "His brother's name was Jubal."
 
 # Map specific phrases to their highlighted versions
 # (Assuming blue = Person, green = Place)
 replacements = {
-    "brother's name was Jabal": "brother's name was \033[94mJabal\033[0m"
+    "brother's name was Jabal": "brother's name was \033[94mJubal\033[0m"
 }
 
 for original, highlighted in replacements.items():
