@@ -77,8 +77,34 @@ options = {
 }
 BLACKLIST = ["faith", "grace", "amen"]
 
+# --- WELCOME PAGE (Shows only if button NOT clicked) ---
+# We use a 'key' in session_state to track if the analysis has run
+if "run_analysis" not in st.session_state:
+    st.session_state.run_analysis = False
+
+if not st.session_state.run_analysis:
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.markdown("""
+        ### Welcome to your AI Study Partner 📖
+        This tool uses **Natural Language Processing** to help you dive deeper into the Bible.
+
+        **To get started:**
+        1. Enter a verse reference in the sidebar (e.g., *Genesis 1* or *John 3*).
+        2. Choose your preferred translation.
+        3. Click **'Analyze Scripture'** to see the magic happen!
+        """)
+
+        st.info("💡 **Tip:** Try looking up 'Genesis 1' to see the historical timeline in action.")
+
+    with col2:
+        # You can add a placeholder image or a nice quote
+        st.image("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1000",
+                 caption="Study..")
+
 # --- 4. MAIN EXECUTION ---
 if st.sidebar.button("Analyze Scripture"):
+    st.session_state.run_analysis = True # Record that we've started
     raw_text = get_bible_text(ref, trans=translation_code)
 
     if raw_text:
