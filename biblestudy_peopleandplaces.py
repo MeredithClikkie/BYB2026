@@ -83,6 +83,8 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "herod"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "moses"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "adam"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "cain"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "irad"}]},
 
 
     # Add patterns for the "PEOPLE GROUPS" category
