@@ -169,7 +169,6 @@ for token in doc:
 print(highlighted_text.strip())
 
 
-
 # --- 2. DATA LAYER: Fetch from Bible API ---
 def get_bible_text(reference, trans="web"):
     try:
@@ -187,6 +186,37 @@ def get_bible_text(reference, trans="web"):
         # This handles internet connection issues
         st.error(f"Connection error: {e}")
         return None
+
+
+import plotly.express as px
+import pandas as pd
+
+
+def get_timeline_data(reference):
+    # Dictionary of major biblical events and approximate dates
+    # You can expand this to include every book/chapter
+    timeline_db = {
+        "Genesis": [
+            {"Event": "Creation/Fall", "Date": -4000},
+            {"Event": "The Flood", "Date": -2400},
+            {"Event": "Call of Abraham", "Date": -2091},
+            {"Event": "Joseph in Egypt", "Date": -1898}
+        ],
+        "Exodus": [
+            {"Event": "Birth of Moses", "Date": -1526},
+            {"Event": "The Exodus", "Date": -1446},
+            {"Event": "Ten Commandments", "Date": -1445}
+        ],
+        "John": [
+            {"Event": "Birth of Jesus", "Date": -4},
+            {"Event": "Baptism of Jesus", "Date": 26},
+            {"Event": "Crucifixion/Resurrection", "Date": 30}
+        ]
+    }
+
+    # Extract the book name from the reference (e.g., "John 1:1" -> "John")
+    book_name = reference.split()[0]
+    return timeline_db.get(book_name, [])
 
 # --- 3. UI LAYER: Streamlit Dashboard ---
 st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
@@ -248,6 +278,29 @@ if st.sidebar.button("Analyze Scripture"):
 
         # Tell the AI document to use our filtered list instead of its original list
         doc.ents = filtered_ents
+
+        # --- Timeline Section ---
+        timeline_events = get_timeline_data(ref)
+
+        if timeline_events:
+            st.divider()
+            st.subheader(f"⏳ Historical Timeline: {ref.split()[0]}")
+
+            # Convert to DataFrame for Plotly
+            df = pd.DataFrame(timeline_events)
+
+            # Create a simple horizontal scatter timeline
+            fig = px.scatter(df, x="Date", y=[0] * len(df), text="Event",
+                             title=f"Major Events in {ref.split()[0]}",
+                             labels={"Date": "Year (Negative = BC, Positive = AD)"})
+
+            fig.update_traces(textposition='top center', marker=dict(size=12, color='purple'))
+            fig.update_yaxes(visible=False, showgrid=False, zeroline=False)
+            fig.update_layout(height=200, margin=dict(l=20, r=20, t=40, b=20))
+
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No timeline data available for this specific book yet.")
 
         # --- Stats Section ---
         if show_stats:
