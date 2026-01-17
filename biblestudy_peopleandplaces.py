@@ -117,6 +117,8 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "babylon"}]},
         {"label": "GPE", "pattern": [{"LOWER": "judea"}]},
         {"label": "GPE", "pattern": [{"LOWER": "bethlehem"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "land"}, {"LOWER": "of"}, {"LOWER": "havilah"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "land"}, {"LOWER": "of"}, {"LOWER": "cush"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
