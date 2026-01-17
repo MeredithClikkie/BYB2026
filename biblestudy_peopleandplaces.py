@@ -6,6 +6,7 @@ from spacy import displacy
 import requests
 import os
 import sys
+from utils import get_base_patterns
 
 # Ensure the app can see the 'books' folder
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
