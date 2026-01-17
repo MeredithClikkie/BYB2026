@@ -82,6 +82,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "achim"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "herod"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "moses"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "adam"}]},
 
 
     # Add patterns for the "PEOPLE GROUPS" category
@@ -122,17 +123,31 @@ def load_nlp():
         {"label": "GPE", "pattern": [{"LOWER": "gihon"}]},
         {"label": "GPE", "pattern": [{"LOWER": "hiddekel"}]},
         {"label": "GPE", "pattern": [{"LOWER": "pishon"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "euphrates"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "tigris"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
-        {"label": "TØP", "pattern": [{"LOWER": "dead"}, {"LOWER": "on"}, {"LOWER": "behalf"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "living"}]},
+        {"label": "TØP", "pattern": [{"LOWER": "dead"}, {"LOWER": "on"}, {"LOWER": "behalf"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "living"}]}]
 
-    ]
 
     ruler.add_patterns(patterns)
     return nlp
 
 nlp = load_nlp()
+
+text = "His brother's name was Jabal."
+
+# Map specific phrases to their highlighted versions
+# (Assuming blue = Person, green = Place)
+replacements = {
+    "brother's name was Jabal": "brother's name was \033[94mJabal\033[0m"
+}
+
+for original, highlighted in replacements.items():
+    text = text.replace(original, highlighted)
+
+print(text)
 
 # --- 2. DATA LAYER: Fetch from Bible API ---
 def get_bible_text(reference, trans="web"):
