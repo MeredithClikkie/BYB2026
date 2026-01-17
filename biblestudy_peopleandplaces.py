@@ -6,7 +6,7 @@ from spacy import displacy
 import requests
 import os
 import sys
-from utils import get_base_patterns
+import utils
 
 # Ensure the app can see the 'books' folder
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -26,16 +26,10 @@ def load_nlp():
     ruler = nlp.add_pipe("entity_ruler", before="ner", config=config)
 
     # Base Patterns
-    patterns = [
-        {"label": "GOD", "pattern": [{"LOWER": "god"}]},
-        {"label": "GOD", "pattern": [{"LOWER": "lord"}]},
-        {"label": "GOD", "pattern": [{"LOWER": "jesus"}]},
-        {"label": "PERSON", "pattern": [{"LOWER": "moses"}]},
-        {"label": "GPE", "pattern": [{"LOWER": "jerusalem"}]}
-    ]
-    ruler.add_patterns(patterns)
+    # PULL PATTERNS FROM UTILS.PY
+    base_patterns = utils.get_base_patterns()
+    ruler.add_patterns(base_patterns)
     return nlp
-
 
 nlp = load_nlp()
 
