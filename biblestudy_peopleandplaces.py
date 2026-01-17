@@ -2,6 +2,9 @@ import streamlit as st
 import requests
 import spacy
 from spacy import displacy
+import re
+import plotly.express as px
+import pandas as pd
 
 # Widget,Use Case
 # st.text_input,Enter verse references or names.
@@ -188,10 +191,6 @@ def get_bible_text(reference, trans="web"):
         return None
 
 
-import plotly.express as px
-import pandas as pd
-
-
 def get_timeline_data(reference):
     # Dictionary of major biblical events and approximate dates
     # You can expand this to include every book/chapter
@@ -280,27 +279,6 @@ if st.sidebar.button("Analyze Scripture"):
         doc.ents = filtered_ents
 
         # --- Timeline Section ---
-        timeline_events = get_timeline_data(ref)
-
-        if timeline_events:
-            st.divider()
-            st.subheader(f"⏳ Historical Timeline: {ref.split()[0]}")
-
-            # Convert to DataFrame for Plotly
-            df = pd.DataFrame(timeline_events)
-
-            # Create a simple horizontal scatter timeline
-            fig = px.scatter(df, x="Date", y=[0] * len(df), text="Event",
-                             title=f"Major Events in {ref.split()[0]}",
-                             labels={"Date": "Year (Negative = BC, Positive = AD)"})
-
-            fig.update_traces(textposition='top center', marker=dict(size=12, color='purple'))
-            fig.update_yaxes(visible=False, showgrid=False, zeroline=False)
-            fig.update_layout(height=200, margin=dict(l=20, r=20, t=40, b=20))
-
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("No timeline data available for this specific book yet.")
 
         # --- Stats Section ---
         if show_stats:
@@ -319,6 +297,22 @@ if st.sidebar.button("Analyze Scripture"):
             col2.metric("People Found", get_count("PERSON"))
             col3.metric("Places Found", get_count("GPE"))
             st.divider()
+
+        # --- Timeline Visualization ---
+        events = get_timeline_data(ref)
+        if events:
+            st.subheader("⏳ Scriptural Timeline")
+            df = pd.DataFrame(events)
+
+            # Create a clean horizontal timeline
+            fig = px.scatter(df, x="Date", y=[0] * len(df), text="Event",
+                             title=f"Historical Context for {ref}")
+
+            fig.update_traces(textposition='top center', marker=dict(size=15, color='#7030a0'))
+            fig.update_yaxes(visible=False, showgrid=False, zeroline=False)
+            fig.update_layout(height=250, margin=dict(l=20, r=20, t=40, b=20))
+
+            st.plotly_chart(fig, use_container_width=True)
 
         # --- Main Text Display ---
         st.subheader(f"Scripture Text: {ref}")
