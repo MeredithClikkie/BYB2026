@@ -48,6 +48,7 @@ def load_nlp():
         {"label": "GOD", "pattern": [{"LOWER": "everlasting"}, {"LOWER": "father"}, {"LOWER": "god"}]},
         {"label": "GOD", "pattern": [{"LOWER": "prince"}, {"LOWER": "of"}, {"LOWER": "peace"}]},
         {"label": "GOD", "pattern": [{"LOWER": "king"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER":"jews"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "his"}, {"LOWER": "son"}]},
 
     # Add patterns for the "PERSON" category
         {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
@@ -80,6 +81,7 @@ def load_nlp():
         {"label": "PERSON", "pattern": [{"LOWER": "eliakim"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "achim"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "herod"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "moses"}]},
 
 
     # Add patterns for the "PEOPLE GROUPS" category
