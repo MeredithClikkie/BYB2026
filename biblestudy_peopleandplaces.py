@@ -5,6 +5,8 @@ from spacy import displacy
 import re
 import plotly.express as px
 import pandas as pd
+from streamlit_timeline import timeline
+
 
 # Widget,Use Case
 # st.text_input,Enter verse references or names.
