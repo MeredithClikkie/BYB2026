@@ -192,32 +192,54 @@ def get_bible_text(reference, trans="web"):
         st.error(f"Connection error: {e}")
         return None
 
+# --- Timeline Visualization ---
+events = get_timeline_data(ref)
+if events:
+    st.subheader("⏳ Scriptural Timeline")
+    df = pd.DataFrame(events)
 
-def get_timeline_data(reference):
-    # Dictionary of major biblical events and approximate dates
-    # You can expand this to include every book/chapter
-    timeline_db = {
-        "Genesis": [
-            {"Event": "Creation/Fall", "Date": -4000},
-            {"Event": "The Flood", "Date": -2400},
-            {"Event": "Call of Abraham", "Date": -2091},
-            {"Event": "Joseph in Egypt", "Date": -1898}
-        ],
-        "Exodus": [
-            {"Event": "Birth of Moses", "Date": -1526},
-            {"Event": "The Exodus", "Date": -1446},
-            {"Event": "Ten Commandments", "Date": -1445}
-        ],
-        "John": [
-            {"Event": "Birth of Jesus", "Date": -4},
-            {"Event": "Baptism of Jesus", "Date": 26},
-            {"Event": "Crucifixion/Resurrection", "Date": 30}
-        ]
-    }
+    # 1. Create the figure with a line connecting the dots
+    fig = px.line(df, x="Date", y=[0] * len(df),
+                  markers=True,
+                  text="Event",
+                  title=f"Historical Context: {ref.split()[0]}")
 
-    # Extract the book name from the reference (e.g., "John 1:1" -> "John")
-    book_name = reference.split()[0]
-    return timeline_db.get(book_name, [])
+    # 2. Add "Stems" (Vertical lines for each event)
+    # This loops through each date and adds a vertical line from the axis to the point
+    for i in range(len(df)):
+        fig.add_shape(type='line',
+                      x0=df['Date'].iloc[i], y0=-0.1,
+                      x1=df['Date'].iloc[i], y1=0,
+                      line=dict(color="grey", width=1, dash="dot"))
+
+    # 3. Styling the Markers and Text
+    fig.update_traces(
+        textposition='top center',
+        marker=dict(size=12, color='#7030a0', symbol='diamond'),
+        line=dict(color='#7030a0', width=2),
+        textfont=dict(size=10)
+    )
+
+    # 4. Clean up the Axes (Hide Y-axis, style X-axis)
+    fig.update_yaxes(visible=False, range=[-0.5, 0.5])
+    fig.update_xaxes(
+        showgrid=True,
+        gridcolor='LightGrey',
+        title="Year (BC < 0 > AD)",
+        zeroline=True,
+        zerolinecolor='black',
+        zerolinewidth=2
+    )
+
+    # 5. General Layout Adjustments
+    fig.update_layout(
+        height=300,
+        margin=dict(l=40, r=40, t=60, b=40),
+        plot_bgcolor='rgba(0,0,0,0)' # Transparent background
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
 
 # --- 3. UI LAYER: Streamlit Dashboard ---
 st.set_page_config(page_title="AI Bible Study Partner", layout="wide")
