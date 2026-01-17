@@ -116,8 +116,12 @@ if st.sidebar.button("Analyze Scripture"):
 
 
             def gc(label):
-                l_id = nlp.vocab.strings.get(label)
-                return counts.get(l_id, 0) if l_id else 0
+                # Check if the label exists in the strings first
+                if label in nlp.vocab.strings:
+                    l_id = nlp.vocab.strings[label]
+                    return counts.get(l_id, 0)
+                else:
+                    return 0
 
 
             cols[0].metric("Divine", gc("GOD"))
