@@ -9,11 +9,10 @@ BLACKLIST = {
 }
 
 def is_blacklisted(word):
-    """
-    Returns True if the word is in the blacklist.
-    Strips punctuation and ignores capitalization.
-    """
-    clean_word = word.strip(".,!?;:()[]\"'").lower()
+    if not word:
+        return False
+    # This strips the comma from "Behold," so it becomes "behold"
+    clean_word = word.strip(".,!?;:()[]\"' ").lower()
     return clean_word in BLACKLIST
 
 
