@@ -6,7 +6,7 @@ import streamlit as st
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = {
     "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold",
-    "lo", "thou"
+    "lo", "thou", "myrrh", "arise"
 }
 
 def is_blacklisted(word):
@@ -36,6 +36,7 @@ def get_base_patterns():
         {"label": "GOD", "pattern": [{"LOWER": "yahweh"}, {"LOWER": "of"}, {"LOWER": "armies"}]},
         {"label": "GOD", "pattern": [{"LOWER": "holy"}, {"LOWER": "one"}]},
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "god"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "the"}, {"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "god"}]},
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "father"}]},
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "man"}]},
         {"label": "GOD", "pattern": [{"LOWER": "son"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "father"}]},
@@ -114,6 +115,9 @@ def get_base_patterns():
         {"label": "PEOPLE", "pattern": [{"LOWER": "eleazar"}]},
         {"label": "PEOPLE", "pattern": [{"LOWER": "matthan"}]},
         {"label": "PEOPLE", "pattern": [{"LOWER": "manasseh"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "john"}, {"LOWER": "the"},{"LOWER": "baptist"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "john"}, {"LOWER": "the"}, {"LOWER": "baptizer"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "zebedee"}]},
 
 
 
@@ -129,6 +133,9 @@ def get_base_patterns():
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "sabeans"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "chaldeans"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "judah"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "pharisees"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "sadducees"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "gentiles"}]},
 
         # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
@@ -163,6 +170,14 @@ def get_base_patterns():
         {"label": "GPE", "pattern": [{"LOWER": "uz"}]},
         {"label": "GPE", "pattern": [{"LOWER": "thamar"}]},
         {"label": "GPE", "pattern": [{"LOWER": "rachab"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "judaea"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "juda"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "rama"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "nazareth"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "capernaum"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "zabulon"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "nephthalim"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "the"}, {"LOWER": "kingdom"}, {"LOWER": "of"}, {"LOWER": "heaven"}]},
 
         # Define patterns for the "TØP" category
         {"label": "tøp", "pattern": [{"LOWER": "necromancer"}]},
