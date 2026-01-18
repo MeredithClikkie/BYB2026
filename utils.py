@@ -151,8 +151,6 @@ def get_base_patterns():
 
 
 
-
-
 def apply_custom_css():
     import streamlit as st
     st.markdown("<style> .main { background-color: #f5f5f5; } </style>", unsafe_allow_html=True)

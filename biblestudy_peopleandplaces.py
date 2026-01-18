@@ -12,7 +12,37 @@ from utils import is_blacklisted
 # 1. PAGE SETUP
 st.set_page_config(page_title="Bible Study Partner", layout="wide")
 
+# --- for BLACKLIST ---
 
+# Example text
+verse_text = "Behold, let that night be solitary, let no joyful voice come therein."
+
+words = verse_text.split()
+final_display = []
+
+for word in words:
+    # --- STEP 1: THE GATEKEEPER (BLACKLIST) ---
+    # We check this first. If it's "Behold", it stops here and moves to the next word.
+    if is_blacklisted(word):
+        final_display.append(word)  # Add plain word
+        continue  # This "skips" the highlighting steps below
+
+    # --- STEP 2: HIGHLIGHTING LOGIC ---
+    # This only runs if the word PASSED the blacklist check.
+
+    # Check for Capitalized words (Potential People/Places)
+    if word[0].isupper():
+        # Highlight this word
+        final_display.append(
+            f"<mark style='background-color: yellow; color: black; padding: 2px; border-radius: 4px;'>{word}</mark>")
+
+    # --- STEP 3: ALL OTHER WORDS ---
+    else:
+        # Add normal lowercase words (and, in, the, etc.) without highlights
+        final_display.append(word)
+
+# Join and display
+st.markdown(" ".join(final_display), unsafe_allow_html=True)
 # --- 1. AI SETUP ---
 @st.cache_resource
 def load_nlp():
