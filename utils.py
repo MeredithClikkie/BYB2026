@@ -5,7 +5,8 @@ import streamlit as st
 # BLACKLIST: Add words here that you want the AI to STOP highlighting
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = {
-    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold", "lo"
+    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold",
+    "lo", "thou"
 }
 
 def is_blacklisted(word):
@@ -96,6 +97,8 @@ def get_base_patterns():
         {"label": "PERSON", "pattern": [{"LOWER": "ham"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "job"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "satan"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "eliphaz"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "bildad"}]},
 
 
         # Add patterns for the "PEOPLE GROUPS" category
@@ -143,8 +146,8 @@ def get_base_patterns():
         {"label": "GPE", "pattern": [{"LOWER": "uz"}]},
 
         # Define patterns for the "TØP" category
-        {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
-        {"label": "TØP",
+        {"label": "tøp", "pattern": [{"LOWER": "necromancer"}]},
+        {"label": "tøp",
          "pattern": [{"LOWER": "dead"}, {"LOWER": "on"}, {"LOWER": "behalf"}, {"LOWER": "of"}, {"LOWER": "the"},
                      {"LOWER": "living"}]}
     ]
