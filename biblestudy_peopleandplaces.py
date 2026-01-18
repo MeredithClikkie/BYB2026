@@ -72,7 +72,7 @@ options = {
 BLACKLIST = ["faith", "grace", "amen"]
 
 # --- WELCOME PAGE (Shows only if button NOT clicked) ---
-# We use a 'key' in session_state to track if the analysis has run
+
 if "run_analysis" not in st.session_state:
     st.session_state.run_analysis = False
 
@@ -80,21 +80,59 @@ if not st.session_state.run_analysis:
     col1, col2 = st.columns([2, 1])
     with col1:
         st.markdown("""
-        ### Welcome to your AI Study Partner 📖
+          ### Welcome to your AI Study Partner 📖
         This tool uses **Natural Language Processing** to help you dive deeper into the Bible.
 
         **To get started:**
         1. Enter a verse reference in the sidebar (e.g., *Genesis 1* or *John 3*).
         2. Choose your preferred translation.
         3. Click **'Analyze Scripture'** to see the magic happen!
-        """)
+            <style>
+            /* TØP Color Palette */
+            :root {
+                --bandito-yellow: #FCE300;
+                --deep-grey: #212121;
+            }
+            .stApp {
+                background-color: var(--deep-grey);
+                color: white;
+            }
+            h1, h2, h3 {
+                color: var(--bandito-yellow) !important;
+                font-family: 'Courier New', Courier, monospace;
+            }
+            .stButton>button {
+                background-color: var(--bandito-yellow);
+                color: black;
+                border-radius: 0px;
+                font-weight: bold;
+                border: none;
+            }
+            /* Style for the Bible text box */
+            .bible-container {
+                border-left: 5px solid var(--bandito-yellow);
+                padding-left: 20px;
+                background-color: #2b2b2b;
+                border-radius: 5px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
 
         st.info("💡 **Tip:** Try looking up 'Genesis 1' to see the historical timeline in action.")
 
     with col2:
-        # You can add a placeholder image or a nice quote
-        st.image("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1000",
-                 caption="Study..")
+        # Load the locally saved image
+        try:
+            st.image("welcome_torch.jpg", use_container_width=True)
+            st.markdown("""
+                <div style='text-align: center; color: #FCE300; font-family: monospace;'>
+                    ‖—‖ Keep your torch lit. ‖—‖
+                </div>
+            """, unsafe_allow_html=True)
+        except:
+            # Fallback if the image file isn't found yet
+            st.warning("Torch image not found. Ensure 'welcome_torch.jpg' is in your project folder.")
+            st.image("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1000", caption="‖—‖")
 
 # --- 4. MAIN EXECUTION ---
 if st.sidebar.button("Analyze Scripture"):

@@ -77,6 +77,7 @@ def get_base_patterns():
         {"label": "PERSON", "pattern": [{"LOWER": "jared"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "enoch"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "ham"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "job"}]},
 
         # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistine"}]},
