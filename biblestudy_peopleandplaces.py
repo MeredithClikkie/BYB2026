@@ -43,17 +43,22 @@ for word in words:
 
 # Join and display
 st.markdown(" ".join(final_display), unsafe_allow_html=True)
+
 # --- 1. AI SETUP ---
 @st.cache_resource
 def load_nlp():
     nlp = spacy.load("en_core_web_sm")
-    config = {"overwrite_ents": True}
-    ruler = nlp.add_pipe("entity_ruler", before="ner", config=config)
 
-    # Base Patterns
-    # PULL PATTERNS FROM UTILS.PY
-    base_patterns = utils.get_base_patterns()
-    ruler.add_patterns(base_patterns)
+    # We add the ruler BEFORE the NER (Named Entity Recognizer)
+    # Use 'overwrite_ents': True to make YOUR patterns the priority
+    if "entity_ruler" not in nlp.pipe_names:
+        config = {"overwrite_ents": True}
+        ruler = nlp.add_pipe("entity_ruler", before="ner", config=config)
+
+        # Base Patterns
+        # PULL PATTERNS FROM UTILS.PY
+        base_patterns = utils.get_base_patterns()
+        ruler.add_patterns(base_patterns)
     return nlp
 
 nlp = load_nlp()
