@@ -24,6 +24,7 @@ def get_base_patterns():
         {"label": "GOD", "pattern": [{"LOWER": "god"}, {"LOWER": "the"}, {"LOWER": "father"}]},
         {"label": "GOD", "pattern": [{"LOWER": "lord"}]},
         {"label": "GOD", "pattern": [{"LOWER": "jesus"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "jesus"}, {"LOWER": "christ"}]},
         {"label": "GOD", "pattern": [{"LOWER": "christ"}]},
         {"label": "GOD", "pattern": [{"LOWER": "spirit"}]},
         {"label": "GOD", "pattern": [{"LOWER": "father"}, {"LOWER": "god"}]},
@@ -46,6 +47,8 @@ def get_base_patterns():
         {"label": "GOD", "pattern": [{"LOWER": "prince"}, {"LOWER": "of"}, {"LOWER": "peace"}]},
         {"label": "GOD", "pattern": [{"LOWER": "king"}, {"LOWER": "of"}, {"LOWER": "the"}, {"LOWER": "jews"}]},
         {"label": "GOD", "pattern": [{"LOWER": "his"}, {"LOWER": "Son"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "emmanuel"}]},
+        {"label": "GOD", "pattern": [{"LOWER": "immanuel"}]},
 
         # Add patterns for the "PERSON" category
         {"label": "PERSON", "pattern": [{"LOWER": "jacob"}]},
@@ -99,6 +102,17 @@ def get_base_patterns():
         {"label": "PERSON", "pattern": [{"LOWER": "satan"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "eliphaz"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "bildad"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "esrom"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "urias"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "abia"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "josaphat"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "ozias"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "achaz"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "ezekias"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "booz"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "salathiel"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "eleazar"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "matthan"}]},
 
 
         # Add patterns for the "PEOPLE GROUPS" category
@@ -144,6 +158,8 @@ def get_base_patterns():
         {"label": "GPE", "pattern": [{"LOWER": "euphrates"}]},
         {"label": "GPE", "pattern": [{"LOWER": "tigris"}]},
         {"label": "GPE", "pattern": [{"LOWER": "uz"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "thamar"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "rachab"}]},
 
         # Define patterns for the "TØP" category
         {"label": "tøp", "pattern": [{"LOWER": "necromancer"}]},
