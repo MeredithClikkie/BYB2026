@@ -5,7 +5,7 @@ import streamlit as st
 # BLACKLIST: Add words here that you want the AI to STOP highlighting
 # (Case sensitive usually, so add variations if needed)
 BLACKLIST = {
-    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold", "Behold"
+    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold", "lo"
 }
 
 def is_blacklisted(word):
@@ -95,6 +95,8 @@ def get_base_patterns():
         {"label": "PERSON", "pattern": [{"LOWER": "enoch"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "ham"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "job"}]},
+        {"label": "PERSON", "pattern": [{"LOWER": "satan"}]},
+
 
         # Add patterns for the "PEOPLE GROUPS" category
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "philistine"}]},
@@ -105,6 +107,8 @@ def get_base_patterns():
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "the"}, {"LOWER": "jews"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "jew"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "nazarene"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "sabeans"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "chaldeans"}]},
 
         # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
@@ -136,6 +140,7 @@ def get_base_patterns():
         {"label": "GPE", "pattern": [{"LOWER": "pishon"}]},
         {"label": "GPE", "pattern": [{"LOWER": "euphrates"}]},
         {"label": "GPE", "pattern": [{"LOWER": "tigris"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "uz"}]},
 
         # Define patterns for the "TØP" category
         {"label": "TØP", "pattern": [{"LOWER": "necromancer"}]},
