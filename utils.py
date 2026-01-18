@@ -113,6 +113,8 @@ def get_base_patterns():
         {"label": "PEOPLE", "pattern": [{"LOWER": "salathiel"}]},
         {"label": "PEOPLE", "pattern": [{"LOWER": "eleazar"}]},
         {"label": "PEOPLE", "pattern": [{"LOWER": "matthan"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "manasseh"}]},
+
 
 
         # Add patterns for the "PEOPLE GROUPS" category
@@ -126,6 +128,7 @@ def get_base_patterns():
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "nazarene"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "sabeans"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "chaldeans"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "judah"}]},
 
         # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
