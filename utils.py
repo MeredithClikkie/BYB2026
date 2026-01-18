@@ -1,3 +1,6 @@
+import regex as re
+
+
 # utils.py
 def get_base_patterns():
     return [
@@ -126,6 +129,27 @@ def get_base_patterns():
          "pattern": [{"LOWER": "dead"}, {"LOWER": "on"}, {"LOWER": "behalf"}, {"LOWER": "of"}, {"LOWER": "the"},
                      {"LOWER": "living"}]}
     ]
+
+# BLACKLIST: Add words here that you want the AI to STOP highlighting
+# (Case sensitive usually, so add variations if needed)
+BLACKLIST = [
+    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold", "Behold"
+]
+
+
+def clean_text(text):
+    """
+    Removes blacklisted words from text before it is displayed.
+    """
+    if not text:
+        return ""
+
+    # Create a regex pattern that matches any word in the blacklist
+    # \b ensures we match whole words only; re.IGNORECASE handles capitalization
+    pattern = re.compile(r'\b(' + '|'.join(map(re.escape, BLACKLIST)) + r')\b', flags=re.IGNORECASE)
+
+    # Replace the blacklisted words with an empty string or a placeholder
+    return pattern.sub("", text)
 
 
 def apply_custom_css():

@@ -7,6 +7,8 @@ import requests
 import os
 import sys
 import utils
+from utils import clean_text
+import regex as re
 
 # Ensure the app can see the 'books' folder
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +19,21 @@ try:
 except ImportError:
     st.error("Could not find books/genesis.py. Please check folder structure.")
 
+import streamlit as st
+from utils import clean_text
+
+st.title("My AI App")
+
+# --- for BLACKLIST ---
+
+# Assume 'ai_response' is the text coming from your AI model
+ai_response = "Behold, we seek grace and faith in life."
+
+# CLEAN the text using the utility function before showing it
+final_display_text = clean_text(ai_response)
+
+# Now display the cleaned version
+st.write(final_display_text)
 
 # --- 1. AI SETUP ---
 @st.cache_resource
