@@ -7,8 +7,8 @@ import requests
 import os
 import sys
 import utils
-from utils import clean_text
-import regex as re
+from utils import is_blacklisted
+
 
 # Ensure the app can see the 'books' folder
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -19,21 +19,40 @@ try:
 except ImportError:
     st.error("Could not find books/genesis.py. Please check folder structure.")
 
-import streamlit as st
-from utils import clean_text
-
 st.title("My AI App")
 
 # --- for BLACKLIST ---
 
-# Assume 'ai_response' is the text coming from your AI model
-ai_response = "Behold, we seek grace and faith in life."
+# Example text
+verse_text = "Behold, let that night be solitary, let no joyful voice come therein."
 
-# CLEAN the text using the utility function before showing it
-final_display_text = clean_text(ai_response)
+words = verse_text.split()
+final_display = []
 
-# Now display the cleaned version
-st.write(final_display_text)
+for word in words:
+    # --- STEP 1: THE GATEKEEPER (BLACKLIST) ---
+    # We check this first. If it's "Behold", it stops here and moves to the next word.
+    if is_blacklisted(word):
+        final_display.append(word)  # Add plain word
+        continue  # This "skips" the highlighting steps below
+
+    # --- STEP 2: HIGHLIGHTING LOGIC ---
+    # This only runs if the word PASSED the blacklist check.
+
+    # Check for Capitalized words (Potential People/Places)
+    if word[0].isupper():
+        # Highlight this word
+        final_display.append(
+            f"<mark style='background-color: yellow; color: black; padding: 2px; border-radius: 4px;'>{word}</mark>")
+
+    # --- STEP 3: ALL OTHER WORDS ---
+    else:
+        # Add normal lowercase words (and, in, the, etc.) without highlights
+        final_display.append(word)
+
+# Join and display
+st.markdown(" ".join(final_display), unsafe_allow_html=True)
+
 
 # --- 1. AI SETUP ---
 @st.cache_resource

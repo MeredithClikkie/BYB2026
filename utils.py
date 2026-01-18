@@ -1,7 +1,22 @@
-import regex as re
-
+import streamlit as st
 
 # utils.py
+
+# BLACKLIST: Add words here that you want the AI to STOP highlighting
+# (Case sensitive usually, so add variations if needed)
+BLACKLIST = {
+    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold", "Behold"
+}
+
+def is_blacklisted(word):
+    """
+    Returns True if the word is in the blacklist.
+    Strips punctuation and ignores capitalization.
+    """
+    clean_word = word.strip(".,!?;:()[]\"'").lower()
+    return clean_word in BLACKLIST
+
+
 def get_base_patterns():
     return [
         # Define patterns for the "GOD" category
@@ -130,26 +145,8 @@ def get_base_patterns():
                      {"LOWER": "living"}]}
     ]
 
-# BLACKLIST: Add words here that you want the AI to STOP highlighting
-# (Case sensitive usually, so add variations if needed)
-BLACKLIST = [
-    "faith", "grace", "learn", "seek", "relieve", "amen", "life", "new moons", "sabbaths", "philistines", "behold", "Behold"
-]
 
 
-def clean_text(text):
-    """
-    Removes blacklisted words from text before it is displayed.
-    """
-    if not text:
-        return ""
-
-    # Create a regex pattern that matches any word in the blacklist
-    # \b ensures we match whole words only; re.IGNORECASE handles capitalization
-    pattern = re.compile(r'\b(' + '|'.join(map(re.escape, BLACKLIST)) + r')\b', flags=re.IGNORECASE)
-
-    # Replace the blacklisted words with an empty string or a placeholder
-    return pattern.sub("", text)
 
 
 def apply_custom_css():
