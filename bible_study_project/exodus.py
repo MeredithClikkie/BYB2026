@@ -30,40 +30,45 @@ def get_data(full_reference):
 
     all_chapters = {
         # --- CHAPTER 3: THE BURNING BUSH ---
+
         "3": [
             {
                 "start_date": {"year": -1446},
-                "display_date": "The Wilderness",
+                "display_date": "1446 BC (Early Date)",
                 "background": {"color": "#744210"},
                 "media": {
                     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Simeon_Solomon_Moses_and_the_Burning_Bush.jpg/440px-Simeon_Solomon_Moses_and_the_Burning_Bush.jpg",
                     "type": "image"},
-                "text": {"headline": "🔥 The Burning Bush", "text": get_bible_text("Exodus 3:2")}
-            }
-        ],
-
-        # --- CHAPTER 7-12: THE PLAGUES ---
-        "7": [
+                "text": {
+                    "headline": "🔥 The Burning Bush",
+                    "text": "The 15th-century date based on 1 Kings 6:1, placing the Exodus during the 18th Dynasty of Egypt."
+                }
+            },
             {
-                "start_date": {"year": -1446, "month": 1, "day": 1},
-                "display_date": "Plague 1",
-                "background": {"color": "#7b0000"},  # Blood Red
+                "start_date": {"year": -1250},
+                "display_date": "c. 1250 BC (Late Date)",
+                "background": {"color": "#4a5568"},
                 "media": {
-                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Plague_of_Blood.jpg/800px-Plague_of_Blood.jpg",
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Simeon_Solomon_Moses_and_the_Burning_Bush.jpg/440px-Simeon_Solomon_Moses_and_the_Burning_Bush.jpg",
                     "type": "image"},
-                "text": {"headline": "🩸 Water to Blood", "text": get_bible_text("Exodus 7:20")}
+                "text": {
+                    "headline": "🔥 The Burning Bush (Ramesside)",
+                    "text": "The 13th-century date often favored by archaeologists, placing the Exodus during the reign of Ramesses II."
+                }
             }
         ],
 
+        # --- CHAPTER 12: THE PASSOVER ---
         "12": [
             {
                 "start_date": {"year": -1446, "month": 1, "day": 14},
-                "display_date": "Passover",
+                "display_date": "1446 BC, Nisan 14",
                 "background": {"color": "#000000"},
                 "media": {
                     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Charles_Foster_The_Signs_on_the_Door.jpg/440px-Charles_Foster_The_Signs_on_the_Door.jpg",
                     "type": "image"},
-                "text": {"headline": "🌑 The Tenth Plague", "text": get_bible_text("Exodus 12:29")}
+                "text": {"headline": "🌑 The Tenth Plague",
+                         "text": "The final plague on Egypt and the institution of the Passover."}
             }
         ],
 
@@ -71,32 +76,14 @@ def get_data(full_reference):
         "14": [
             {
                 "start_date": {"year": -1446, "month": 1, "day": 20},
-                "display_date": "The Deliverance",
+                "display_date": "1446 BC, The Crossing",
                 "background": {"color": "#2c5282"},
                 "media": {
                     "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/The_Seventh_Plague_by_John_Martin.jpg/800px-The_Seventh_Plague_by_John_Martin.jpg",
                     "type": "image"},
-                "text": {"headline": "🌊 Crossing the Red Sea", "text": get_bible_text("Exodus 14:21")}
+                "text": {"headline": "🌊 Crossing the Red Sea", "text": "Israel is delivered from Pharaoh's army."}
             }
-        ],
-        
-        "20": [
-            {
-                "start_date": {"year": -1445},
-                "display_date": "Mount Sinai",
-                "background": {"color": "#4A5568"},
-                "media": {
-                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Gustave_Dor%C3%A9_-_The_Moses_and_the_Ten_Commandments.jpg/440px-Gustave_Dor%C3%A9_-_The_Moses_and_the_Ten_Commandments.jpg",
-                    "type": "image",
-                    "caption": "Moses receiving the Law"
-                },
-                "text": {
-                    "headline": "📜 The Ten Commandments",
-                    "text": "God delivers the Decalogue to Israel, establishing the moral foundation of the Covenant."
-                }
-            }
-        ],
+        ]
     }
-
     events = all_chapters.get(chapter, [])
     return {"events": events}

@@ -7,8 +7,7 @@ import requests
 import utils
 from utils import is_blacklisted
 from streamlit_timeline import timeline
-import genesis
-
+from data_manager import get_timeline_events
 
 # 1. PAGE SETUP (Must be the very first command)
 st.set_page_config(page_title="Bible Study Partner", layout="wide")
@@ -151,6 +150,20 @@ if not st.session_state.run_analysis:
                 border-radius: 0px; 
                 line-height: 1.6;
             }
+            
+            /* Metric Label Styling (The titles like 'Divine', 'People') */
+            [data-testid="stMetricLabel"] {
+                color: var(--bandito-yellow) !important;
+                font-family: 'Courier Prime', monospace !important;
+                text-transform: uppercase;
+            }
+            
+            /* Metric Value Styling (The actual numbers) */
+            [data-testid="stMetricValue"] {
+                color: white !important;
+                text-shadow: 1px 1px 5px var(--bandito-yellow); /* Gives it a slight glow */
+            }
+            
             </style>
 
             ### Welcome to the Trench Study 📖
@@ -172,97 +185,42 @@ if not st.session_state.run_analysis:
             "<div style='text-align: center; color: #FCE300; font-family: monospace;'>‖—‖ keep your torch lit ‖—‖</div>",
             unsafe_allow_html=True)
 
-
-# CASE B: THE ANALYSIS PAGE
+    # --- B. THE ANALYSIS PAGE ---
 else:
     raw_text = get_bible_text(ref, trans=translation_code)
 
     if raw_text:
-        book_name = ref.split()[0].title()
+        parts = ref.split()
+        book_name = parts[0].title()
+        # Clean chapter extraction
+        chapter_num = parts[1].split(':')[0] if len(parts) > 1 else "All"
 
-        # --- A. TIMELINE SECTION (The Protected Version) ---
-        import importlib
-        # 1. KEEP YOUR WORKING GENESIS LOGIC
-        if book_name == "Genesis":
-            st.subheader(f"⏳ Genesis: The Era of Beginnings")
-            timeline_data = genesis.get_data(ref)  # This is your current working line
+        # --- 1. TIMELINE LOGIC ---
+        events = get_timeline_events(book_name, chapter_num)
+
+        if events:
+            timeline_data = {"events": events}
+            start_index = 0
+            for i, event in enumerate(events):
+                headline = event.get("text", {}).get("headline", "")
+                if "CURRENT INTEL" in headline or "The Great Flood" in headline:
+                    start_index = i
+                    break
+
+            timeline_data["start_at_slide"] = start_index
+            st.subheader(f"⏳ {book_name}: Chapter {chapter_num} Intelligence")
             timeline(timeline_data, height=600)
 
-        # 2. KEEP YOUR WORKING EXODUS LOGIC
-        elif book_name == "Exodus":
-            st.subheader(f"⏳ Exodus: The Great Deliverance")
-            timeline_data = exodus.get_data(ref)  # This is your current working line
-            timeline(timeline_data, height=600)
-
-        # 3. NEW GOSPEL WAVE LOGIC (The New "Switchboard")
-        elif book_name in ["Matthew", "Mark", "Luke", "John"]:
-            import importlib
-
-            try:
-                # This points all four books to your new gospels.py file
-                book_module = importlib.import_module("gospels")
-                st.subheader(f"⏳ The Life of Christ: Gospel Harmony")
-                timeline_data = book_module.get_data(ref)
-                if timeline_data and timeline_data.get("events"):
-                    timeline(timeline_data, height=600)
-            except ImportError:
-                st.error("Gospels module not found. Check gospels.py location.")
-
-            # --- NEW WAVE ROUTING: CHURCH ---
-        elif book_name in ["Acts", "Romans", "Galatians", "Ephesians", "Philippians", "Colossians",
-                           "Revelation"]:
-            import importlib
-
-            try:
-                book_module = importlib.import_module("church")
-                st.subheader("⛵ Apostolic Mission & The Early Church")
-
-                # 1. Get the data
-                timeline_data = book_module.get_data(ref)
-
-                if timeline_data and "events" in timeline_data:
-                    # 2. THE START_INDEX LOGIC (Calculated here)
-                    start_index = 0
-                    for i, event in enumerate(timeline_data["events"]):
-                        if "CURRENT INTEL" in event.get("text", {}).get("headline", ""):
-                            start_index = i
-                            break
-
-                    # 3. Inject it into the data dictionary to avoid the TypeError
-                    timeline_data["start_at_slide"] = start_index
-
-                    # 4. Final render (Simple call)
-                    timeline(timeline_data, height=600)
-                else:
-                    st.info(f"Timeline for {ref} is currently being decrypted.")
-
-            except ImportError:
-                st.error("Church module not found.")
-
-
-        elif book_name in ["Psalms", "Proverbs", "Ecclesiastes", "Job"]:
-            st.subheader("✍️ The Golden Age of Hebrew Poetry")
-            book_module = importlib.import_module("wisdom")
-            timeline_data = book_module.get_data(ref)
-            timeline(timeline_data, height=600)
-
-        elif book_name in ["Isaiah", "Jeremiah", "Ezekiel", "Daniel", "Malachi"]:
-            st.subheader("📢 Prophetic Voice: The Exile & Restoration")
-            book_module = importlib.import_module("prophets")
-            timeline_data = book_module.get_data(ref)
-            timeline(timeline_data, height=600)
-
-        # 4. EVERYTHING ELSE (Fallback)
         else:
-            events = get_fallback_timeline(ref)
-            if events:
-                st.subheader(f"⏳ Timeline: {book_name}")
-                df = pd.DataFrame(events)
-                fig = px.line(df, x="Date", y=[0] * len(df), markers=True, text="Event")
-                fig.update_layout(height=250, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-                st.plotly_chart(fig, use_container_width=True)
+            # Fallback to "All" if specific chapter has no events
+            all_events = get_timeline_events(book_name, "All")
+            if all_events:
+                st.info(f"Showing full historical intel for {book_name}")
+                timeline({"events": all_events}, height=600)
+            else:
+                st.warning(f"No timeline data found for {book_name}. Proceeding to text analysis.")
 
-        # --- B. TEXT HIGHLIGHTING SECTION ---
+        # --- 2. TEXT HIGHLIGHTING SECTION (Now properly indented) ---
         st.divider()
         st.subheader(f"📖 Scripture Analysis: {ref}")
 
@@ -274,7 +232,6 @@ else:
             cols = st.columns(5)
 
 
-            # Helper to get counts
             def gc(label):
                 return counts.get(nlp.vocab.strings[label], 0) if label in nlp.vocab.strings else 0
 
