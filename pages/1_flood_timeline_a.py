@@ -21,39 +21,39 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # 3. Timeline Data Construction
-# We use a placeholder 'year' (600) to represent Noah's age
+# We use the approximate Masoretic text year of 2348 BC approx 1,656 years after creation popularized by Archbishop James Ussher
 flood_events = {
     "events": [
         {
-            "start_date": {"year": "600", "month": "2", "day": "10"},
+            "start_date": {"year": "2348 BC", "month": "2", "day": "10"},
             "text": {
                 "headline": "Entry into the Ark",
                 "text": f"<i>Genesis 7:4-10</i><br>{get_bible_text('Genesis 7:7')}"
             }
         },
         {
-            "start_date": {"year": "600", "month": "2", "day": "17"},
+            "start_date": {"year": "2348 BC", "month": "2", "day": "17"},
             "text": {
                 "headline": "The Flood Begins",
                 "text": f"<i>Genesis 7:11</i><br>{get_bible_text('Genesis 7:11')}"
             }
         },
         {
-            "start_date": {"year": "600", "month": "7", "day": "17"},
+            "start_date": {"year": "2348 BC", "month": "7", "day": "17"},
             "text": {
                 "headline": "The Ark Rests",
                 "text": f"<i>Genesis 8:4</i><br>{get_bible_text('Genesis 8:4')}"
             }
         },
         {
-            "start_date": {"year": "600", "month": "10", "day": "1"},
+            "start_date": {"year": "2348 BC", "month": "10", "day": "1"},
             "text": {
                 "headline": "Mountain Tops Visible",
                 "text": f"<i>Genesis 8:5</i><br>{get_bible_text('Genesis 8:5')}"
             }
         },
         {
-            "start_date": {"year": "601", "month": "2", "day": "27"},
+            "start_date": {"year": "2347 BC", "month": "2", "day": "27"},
             "text": {
                 "headline": "The Earth is Dry",
                 "text": f"<i>Genesis 8:14-16</i><br>{get_bible_text('Genesis 8:14')}"
