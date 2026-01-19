@@ -49,31 +49,31 @@ def get_bible_text(reference, trans="web"):
 # 4. The Data (Structured as Dictionaries)
 flood_events = [
     {
-        "date_label": "Year 600, Month 2, Day 10",
+        "date_label": "2348 BC, Month 2, Day 10",
         "headline": "Entry into the Ark",
         "ref": "Genesis 7:7",
         "note": "Noah and his family enter the ark seven days before the rain begins."
     },
     {
-        "date_label": "Year 600, Month 2, Day 17",
+        "date_label": "2348 BC, Month 2, Day 17",
         "headline": "The Flood Begins",
         "ref": "Genesis 7:11",
         "note": "The fountains of the great deep burst forth and the windows of heaven opened."
     },
     {
-        "date_label": "Year 600, Month 7, Day 17",
+        "date_label": "2348 BC, Month 7, Day 17",
         "headline": "The Ark Rests",
         "ref": "Genesis 8:4",
         "note": "Exactly 150 days after the flood began, the ark rests on Ararat."
     },
     {
-        "date_label": "Year 600, Month 10, Day 1",
+        "date_label": "2348 BC, Month 10, Day 1",
         "headline": "Mountain Tops Visible",
         "ref": "Genesis 8:5",
         "note": "The waters continued to recede until the peaks of the mountains were seen."
     },
     {
-        "date_label": "Year 601, Month 2, Day 27",
+        "date_label": "2347 BC, Month 2, Day 27",
         "headline": "The Earth is Dry",
         "ref": "Genesis 8:14",
         "note": "Noah and his family exit the ark. The total duration was approximately 371 days."
