@@ -3,16 +3,16 @@ import streamlit as st
 import requests
 from streamlit_timeline import timeline
 
-# Page Configuration (Removes top padding)
-st.set_page_config(layout="wide")
 
-# THE "TOP OF PAGE" CSS
-# This removes the gap and styles the vertical timeline
+# 1. Page Configuration (Must be the very first Streamlit command)
+st.set_page_config(page_title="Genesis Flood Timeline", layout="wide")
+
+# 2. CSS for Top-of-Page Positioning and Timeline Styling
 st.markdown("""
     <style>
-        .block-container { padding-top: 1rem; }
-        .timeline-item { 
-               border-left: 3px solid #007BFF; 
+           .block-container { padding-top: 1rem; }
+           .timeline-item { 
+               border-left: 3px solid #704214; 
                padding-left: 20px; 
                margin-bottom: 30px; 
                position: relative; 
@@ -20,111 +20,85 @@ st.markdown("""
            .timeline-item::before { 
                content: ''; 
                position: absolute; 
-               left: -9px; 
+               left: -10px; 
                top: 0; 
-               width: 15px; 
-               height: 15px; 
-               background-color: #007BFF; 
+               width: 16px; 
+               height: 16px; 
+               background-color: #704214; 
                border-radius: 50%; 
            }
-           .date-header { color: #007BFF; font-weight: bold; font-size: 1.2rem; }
+           .date-header { color: #704214; font-weight: bold; font-size: 1.1rem; }
+           .headline { font-size: 1.5rem; font-weight: bold; margin-top: -5px; }
     </style>
     """, unsafe_allow_html=True)
 
 
-# Helper Function
+# 3. Cached Bible API Function
+@st.cache_data
 def get_bible_text(reference, trans="web"):
     try:
         url = f"https://bible-api.com/{reference}?translation={trans}"
         response = requests.get(url)
-        return response.json()['text'] if response.status_code == 200 else "Scripture not found."
-    except:
-        return "Error fetching scripture."
+        if response.status_code == 200:
+            return response.json()['text'].strip()
+        return "Scripture text not found."
+    except Exception:
+        return "Connection error."
 
 
-# 3. Timeline Data Construction
-# We use the approximate Masoretic text year of 2348 BC approx 1,656 years after creation popularized by Archbishop James Ussher
+# 4. The Data (Structured as Dictionaries)
 flood_events = [
-        {
-            "start_date": {"year": "2348 BC", "month": "2", "day": "10"},
-            "text": {
-                "headline": "Entry into the Ark",
-                "text": f"<i>Genesis 7:4-10</i><br>{get_bible_text('Genesis 7:7')}"
-            }
-        },
-        {
-            "start_date": {"year": "2348 BC", "month": "2", "day": "17"},
-            "text": {
-                "headline": "The Flood Begins",
-                "text": f"<i>Genesis 7:11</i><br>{get_bible_text('Genesis 7:11')}"
-            }
-        },
-        {
-            "start_date": {"year": "2348 BC", "month": "7", "day": "17"},
-            "text": {
-                "headline": "The Ark Rests",
-                "text": f"<i>Genesis 8:4</i><br>{get_bible_text('Genesis 8:4')}"
-            }
-        },
-        {
-            "start_date": {"year": "2348 BC", "month": "10", "day": "1"},
-            "text": {
-                "headline": "Mountain Tops Visible",
-                "text": f"<i>Genesis 8:5</i><br>{get_bible_text('Genesis 8:5')}"
-            }
-        },
-        {
-            "start_date": {"year": "2347 BC", "month": "2", "day": "27"},
-            "text": {
-                "headline": "The Earth is Dry",
-                "text": f"<i>Genesis 8:14-16</i><br>{get_bible_text('Genesis 8:14')}"
-            }
-        }
-    ]
+    {
+        "date_label": "Year 600, Month 2, Day 10",
+        "headline": "Entry into the Ark",
+        "ref": "Genesis 7:7",
+        "note": "Noah and his family enter the ark seven days before the rain begins."
+    },
+    {
+        "date_label": "Year 600, Month 2, Day 17",
+        "headline": "The Flood Begins",
+        "ref": "Genesis 7:11",
+        "note": "The fountains of the great deep burst forth and the windows of heaven opened."
+    },
+    {
+        "date_label": "Year 600, Month 7, Day 17",
+        "headline": "The Ark Rests",
+        "ref": "Genesis 8:4",
+        "note": "Exactly 150 days after the flood began, the ark rests on Ararat."
+    },
+    {
+        "date_label": "Year 600, Month 10, Day 1",
+        "headline": "Mountain Tops Visible",
+        "ref": "Genesis 8:5",
+        "note": "The waters continued to recede until the peaks of the mountains were seen."
+    },
+    {
+        "date_label": "Year 601, Month 2, Day 27",
+        "headline": "The Earth is Dry",
+        "ref": "Genesis 8:14",
+        "note": "Noah and his family exit the ark. The total duration was approximately 371 days."
+    }
+]
 
-# Option 2:
-# 4. DATA LIST
-# Add as many events as you like here
-# flood_events = [
-#    ("2nd Month, Day 17", "Genesis 7:11", "The Flood Begins"),
-#    ("40 Days Later", "Genesis 7:12", "Rain Stops"),
-#    ("7th Month, Day 17", "Genesis 8:4", "Ark Rests on Ararat"),
-#    ("10th Month, Day 1", "Genesis 8:5", "Mountain Tops Visible"),
-#    ("2nd Month, Day 27", "Genesis 8:14", "Noah Exits the Ark")
-# ]
-
-# 4. Rendering
+# 5. Rendering the Page
 st.title("Chronology of the Genesis Flood")
+st.write("A timeline based on the account in Genesis 7 and 8.")
 
+# The Loop (Correctly accessing the Dictionary keys)
 for event in flood_events:
-    # Extract data from your dictionary structure
-    # We use .get() to avoid errors if a key is missing
-    headline = event["text"]["headline"]
-    description = event["text"]["text"]
-
-    # Format the date from the dictionary
-    d = event["start_date"]
-    date_str = f"Year: {d['year']}, Month: {d['month']}, Day: {d['day']}"
-
     with st.container():
+        # Display the custom styled "dot and line" header
         st.markdown(f"""
             <div class="timeline-item">
-                <div class="date-header">{date_str}</div>
-                <div class="ref-text"><strong>{headline}</strong></div>
+                <div class="date-header">{event['date_label']}</div>
+                <div class="headline">{event['headline']}</div>
             </div>
         """, unsafe_allow_html=True)
-        # We don't need to call get_bible_text here because
-        # it's already inside your 'description' string!
-        st.info(description)
 
-# This renders the interactive timeline at the top
-timeline(flood_events, height=500)
+        # Fetch the Bible text dynamically based on the 'ref' key
+        bible_text = get_bible_text(event['ref'])
 
-st.divider()
-
-# 5. Scripture Reference Section below
-st.subheader("Scripture Reading")
-with st.expander("Read Genesis Chapter 7"):
-    st.write(get_bible_text("Genesis 7"))
-with st.expander("Read Genesis Chapter 8"):
-    st.write(get_bible_text("Genesis 8"))
+        # Display the text in a nice box
+        st.info(f"**{event['ref']}**: {bible_text}")
+        st.caption(f"Note: {event['note']}")
+        st.write("")  # Add some spacing

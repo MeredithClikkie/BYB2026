@@ -1,6 +1,6 @@
-from streamlit_timeline import timeline
-
 import streamlit as st
+import requests
+from streamlit_timeline import timeline
 
 # Always make this the first Streamlit command
 st.set_page_config(
