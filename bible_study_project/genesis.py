@@ -47,29 +47,43 @@ def get_data(full_reference):
 
         # --- CHAPTER 7: THE FLOOD BEGINS ---
         "7": [
-            {
-                "start_date": {"year": -2348, "month": 2, "day": 10},
-                "display_date": "2348 BC, Mo 2, Day 10",
-                "background": {"color": "#000000"},
-                "media": {
-                    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Noahs_Ark.jpg",
-                    "type": "image",
-                    "caption": f"<b>ENTRY:</b> {get_bible_text('Genesis 7:7')}"
-                },
-                "text": {"headline": "<span style='color:#ed8936;'>The Gathering</span>", "text": " "}
-            },
+            # --- MASORETIC TEXT (Standard Tradition) ---
             {
                 "start_date": {"year": -2348, "month": 2, "day": 17},
-                "display_date": "2348 BC, Mo 2, Day 17",
+                "display_date": "2348 BC (Masoretic)",
                 "background": {"color": "#1a365d"},
                 "media": {
                     "url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/The_Deluge_by_Francis_Danby.jpg",
                     "type": "image",
-                    "caption": f"<b>THE DEEP:</b> {get_bible_text('Genesis 7:11')}"
+                    "caption": "Date calculated by Archbishop James Ussher."
                 },
-                "text": {"headline": "<span style='color:#63b3ed;'>The Great Flood</span>", "text": " "}
+                "text": {"headline": "The Great Flood", "text": "The traditional Masoretic timeline."}
+            },
+
+            # --- SAMARITAN PENTATEUCH ---
+            {
+                "start_date": {"year": -3145, "month": 2, "day": 17},
+                "display_date": "3145 BC (Samaritan)",
+                "background": {"color": "#2d3748"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Noahs_Ark.jpg",
+                    "type": "image"},
+                "text": {"headline": "Samaritan Chronology", "text": "This tradition places the flood earlier."}
+            },
+
+            # --- SEPTUAGINT (Greek Tradition) ---
+            {
+                "start_date": {"year": -3298, "month": 2, "day": 17},
+                "display_date": "3298 BC (Septuagint)",
+                "background": {"color": "#000000"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d7/Noahs_Ark.jpg",
+                    "type": "image"},
+                "text": {"headline": "Septuagint Chronology", "text": "The oldest biblical manuscript tradition."}
             }
         ],
+        # ... Chapter 8 ...
+
 
         # --- CHAPTER 8: THE WATERS RECEDE ---
         "8": [

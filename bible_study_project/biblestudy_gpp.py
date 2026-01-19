@@ -7,6 +7,7 @@ import requests
 import utils
 from utils import is_blacklisted
 from streamlit_timeline import timeline
+import genesis
 
 
 # 1. PAGE SETUP (Must be the very first command)
@@ -207,24 +208,37 @@ else:
             except ImportError:
                 st.error("Gospels module not found. Check gospels.py location.")
 
-        # NEW WAVE ROUTING
-        elif book_name in ["Acts", "Romans", "Revelation"]:
+            # --- NEW WAVE ROUTING: CHURCH ---
+        elif book_name in ["Acts", "Romans", "Galatians", "Ephesians", "Philippians", "Colossians",
+                           "Revelation"]:
             import importlib
 
             try:
                 book_module = importlib.import_module("church")
+                st.subheader("⛵ Apostolic Mission & The Early Church")
+
+                # 1. Get the data
                 timeline_data = book_module.get_data(ref)
 
-                # SAFETY CHECK: Only render if there are events
-                if timeline_data and len(timeline_data.get("events", [])) > 0:
-                    st.subheader("⛵ Apostolic Mission & The Early Church")
+                if timeline_data and "events" in timeline_data:
+                    # 2. THE START_INDEX LOGIC (Calculated here)
+                    start_index = 0
+                    for i, event in enumerate(timeline_data["events"]):
+                        if "CURRENT INTEL" in event.get("text", {}).get("headline", ""):
+                            start_index = i
+                            break
+
+                    # 3. Inject it into the data dictionary to avoid the TypeError
+                    timeline_data["start_at_slide"] = start_index
+
+                    # 4. Final render (Simple call)
                     timeline(timeline_data, height=600)
                 else:
-                    # If no specific chapter data, show a placeholder message or nothing
-                    st.info(f"Timeline intelligence for {ref} is currently being decrypted. Stay low.")
+                    st.info(f"Timeline for {ref} is currently being decrypted.")
 
             except ImportError:
                 st.error("Church module not found.")
+
 
         elif book_name in ["Psalms", "Proverbs", "Ecclesiastes", "Job"]:
             st.subheader("✍️ The Golden Age of Hebrew Poetry")
