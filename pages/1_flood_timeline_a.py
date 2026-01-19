@@ -8,6 +8,23 @@ st.set_page_config(layout="wide")
 st.markdown("""
     <style>
         .block-container { padding-top: 1rem; }
+        .timeline-item { 
+               border-left: 3px solid #007BFF; 
+               padding-left: 20px; 
+               margin-bottom: 30px; 
+               position: relative; 
+           }
+           .timeline-item::before { 
+               content: ''; 
+               position: absolute; 
+               left: -9px; 
+               top: 0; 
+               width: 15px; 
+               height: 15px; 
+               background-color: #007BFF; 
+               border-radius: 50%; 
+           }
+           .date-header { color: #007BFF; font-weight: bold; font-size: 1.2rem; }
     </style>
     """, unsafe_allow_html=True)
 
