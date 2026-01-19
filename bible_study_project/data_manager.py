@@ -9,7 +9,7 @@ def get_bible_text(reference, trans="web"):
     except:
         return "Connection error."
 
-def get_master_data(wave_name):
+def get_master_data(wave_name, chapter = "1"):
     """
     Returns the full database for a specific 'Wave' (Book).
     """
@@ -191,20 +191,157 @@ def get_master_data(wave_name):
             }]
         }
 
-    return {}  # Return empty dict if no wave found
 
+        # --- PROPHETS WAVE ---
+    elif wave_name in ["Isaiah", "Jeremiah", "Ezekiel", "Daniel", "Malachi"]:
+        return {
+            "All": [
+                {
+                    "start_date": {"year": -586},
+                    "display_date": "The Exile",
+                    "background": {"color": "#17202a"},
+                    "text": {"headline": "The Fall of Jerusalem",
+                             "text": f"{wave_name} speaks into the era of the Babylonian captivity."}
+                },
+                {
+                    "start_date": {"year": -538},
+                    "display_date": "The Return",
+                    "background": {"color": "#f1c40f"},
+                    "text": {"headline": "Restoration", "text": "The remnant returns to rebuild the Temple."}
+                }
+            ]
+        }
 
-def get_timeline_events(wave, chapter):
-    """
-    Filters the data for a specific chapter.
-    If chapter is 'All', it combines all chapters in that wave.
-    """
-    wave_data = get_master_data(wave)
-
-    if chapter == "All":
+    # --- GOSPEL HARMONY WAVE ---
+    elif wave_name in ["Matthew", "Mark", "Luke", "John"]:
         all_events = []
-        for ch_events in wave_data.values():
-            all_events.extend(ch_events)
-        return all_events
 
-    return wave_data.get(str(chapter), [])
+        # John 1: Prologue
+        if chapter == "1" and wave_name == "John":
+            all_events.append({
+                "start_date": {"year": -4004},
+                "display_date": "Eternity Past",
+                "background": {"color": "#000000"},
+                "text": {"headline": "The Word", "text": "In the beginning was the Word..."}
+            })
+
+        # Nativity
+        if (wave_name == "Matthew" and chapter == "2") or (wave_name == "Luke" and chapter == "2"):
+            all_events.append({
+                "start_date": {"year": -4},
+                "display_date": "4 BC",
+                "background": {"color": "#1a202c"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/The_Nativity_by_Federico_Barocci.jpg/440px-The_Nativity_by_Federico_Barocci.jpg",
+                    "type": "image"},
+                "text": {"headline": "✨ The Nativity", "text": "The birth of Jesus in Bethlehem."}
+            })
+
+        # Baptism
+        if chapter == "3" and wave_name in ["Matthew", "Mark", "Luke"]:
+            all_events.append({
+                "start_date": {"year": 26},
+                "display_date": "AD 26",
+                "background": {"color": "#2d3748"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Baptism_of_Christ_by_Piero_della_Francesca.jpg/440px-Baptism_of_Christ_by_Piero_della_Francesca.jpg",
+                    "type": "image"},
+                "text": {"headline": "🌊 Baptism of Jesus", "text": "Ministry begins at the Jordan River."}
+            })
+
+        # Crucifixion
+        passion_chapters = {"Matthew": "27", "Mark": "15", "Luke": "23", "John": "19"}
+        if chapter == passion_chapters.get(wave_name):
+            all_events.append({
+                "start_date": {"year": 30, "month": 4, "day": 7},
+                "display_date": "AD 30",
+                "background": {"color": "#000000"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Crucifixion_Dali.jpg/440px-Crucifixion_Dali.jpg",
+                    "type": "image"},
+                "text": {"headline": "🌑 The Crucifixion", "text": "The sacrifice at Calvary."}
+            })
+
+        return {"current_chapter": all_events}
+
+    return {}
+
+
+def get_timeline_events(book, chapter):
+    # Ensure events starts as a list!
+    # Sort everything by year before returning
+
+    events = []
+    # Step 1: Get data from master
+    wave_data = get_master_data(book, chapter)
+
+    # Handle the key structure
+    if chapter == "All":
+
+        for ch_events in wave_data.values():
+            events.extend(ch_events)
+    else:
+        # Check for specific chapter or the Gospel harmony key
+        events = wave_data.get(str(chapter), wave_data.get("current_chapter", []))
+
+    # Step 2: ADD PERMANENT JOURNEYS (For Acts & Epistles)
+    # Note: We only add these for New Testament books to keep the timeline relevant
+    nt_books = ["Acts", "Romans", "Galatians", "Ephesians", "Philippians", "Colossians", "Hebrews", "James"]
+
+    if book in nt_books or book in ["Matthew", "Mark", "Luke", "John"]:
+        journeys = [
+            {"year": 46, "head": "⛵ 1st Journey (Acts 13-14)", "color": "#1b4f72",
+             "text": "Paul & Barnabas sent from Antioch to Cyprus and Galatia."},
+            {"year": 49, "head": "🗺️ 2nd Journey (Acts 15-18)", "color": "#1e8449",
+             "text": "The Gospel enters Europe; ministry in Philippi and Corinth."},
+            {"year": 53, "head": "📖 3rd Journey (Acts 19-21)", "color": "#9a7d0a",
+             "text": "Paul's extensive ministry in Ephesus."},
+            {"year": 59, "head": "⚓ Voyage to Rome (Acts 27-28)", "color": "#212f3d",
+             "text": "Paul travels as a prisoner to stand trial before Caesar."}
+        ]
+
+        for j in journeys:
+            events.append({
+                "start_date": {"year": j["year"]},
+                "display_date": f"AD {j['year']}",
+                "background": {"color": j["color"]},
+                "text": {"headline": j["head"], "text": j["text"]}
+            })
+
+    # Step 3: ADD EPISTLE DATA
+    epistle_context = {
+        "Galatians": {"year": 48, "loc": "Antioch", "context": "Regarding the Gospel of Grace."},
+        "Romans": {"year": 57, "loc": "Corinth", "context": "Paul's masterwork on salvation."},
+        "Ephesians": {"year": 61, "loc": "Rome (Prison)", "context": "Written during house arrest."},
+        "Philippians": {"year": 61, "loc": "Rome (Prison)", "context": "The 'Epistle of Joy'."},
+        "Colossians": {"year": 61, "loc": "Rome (Prison)", "context": "Supremacy of Christ."}
+    }
+
+    if book in epistle_context:
+        ctx = epistle_context[book]
+        events.append({
+            "start_date": {"year": ctx["year"]},
+            "display_date": f"AD {ctx['year']}",
+            "background": {"color": "#FCE300"},
+            "text": {
+                "headline": f"📬 CURRENT INTEL: Letter to the {book}",
+                "text": f"<b>Written from:</b> {ctx['loc']}<br><br>{ctx['context']}"
+            }
+        })
+
+    # Step 4: SORTING & INDEXING
+    if not events:
+        return []
+
+    # Sort by year
+    events = sorted(events, key=lambda x: x["start_date"]["year"])
+
+    # Find the "Current Intel" index to center the timeline
+    start_index = 0
+    for i, event in enumerate(events):
+        if "CURRENT INTEL" in event.get("text", {}).get("headline", ""):
+            start_index = i
+            break
+
+    # Return the list. In biblestudy_gpp.py, you will wrap this in {"events": events, "start_at_slide": start_index}
+    return events, start_index

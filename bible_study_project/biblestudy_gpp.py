@@ -196,27 +196,27 @@ else:
         chapter_num = parts[1].split(':')[0] if len(parts) > 1 else "All"
 
         # --- 1. TIMELINE LOGIC ---
-        events = get_timeline_events(book_name, chapter_num)
+        # We unpack BOTH the list and the pre-calculated index from your data_manager
+        events, start_index = get_timeline_events(book_name, chapter_num)
 
         if events:
-            timeline_data = {"events": events}
-            start_index = 0
-            for i, event in enumerate(events):
-                headline = event.get("text", {}).get("headline", "")
-                if "CURRENT INTEL" in headline or "The Great Flood" in headline:
-                    start_index = i
-                    break
+            # Create the data package for the timeline component
+            timeline_data = {
+                "events": events,
+                "start_at_slide": start_index  # This now uses the unpacked value
+            }
 
-            timeline_data["start_at_slide"] = start_index
             st.subheader(f"⏳ {book_name}: Chapter {chapter_num} Intelligence")
             timeline(timeline_data, height=600)
 
         else:
             # Fallback to "All" if specific chapter has no events
-            all_events = get_timeline_events(book_name, "All")
+            # Note: We unpack here as well to keep the return types consistent
+            all_events, all_start_index = get_timeline_events(book_name, "All")
+
             if all_events:
                 st.info(f"Showing full historical intel for {book_name}")
-                timeline({"events": all_events}, height=600)
+                timeline({"events": all_events, "start_at_slide": all_start_index}, height=600)
             else:
                 st.warning(f"No timeline data found for {book_name}. Proceeding to text analysis.")
 
