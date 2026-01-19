@@ -160,6 +160,37 @@ def get_master_data(wave_name):
             ]
         }
 
+    # --- ERA OF SOLOMON (Proverbs, Ecclesiastes, Song of Solomon) ---
+    elif wave_name in ["Proverbs", "Ecclesiastes", "Song of Solomon"]:
+        # We return a dictionary where the key is "All" so the timeline loads automatically
+        return {
+            "All": [{
+                "start_date": {"year": -970},
+                "display_date": "10th Century BC",
+                "background": {"color": "#9a7d0a"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Solomon_by_Simeon_Solomon.jpg/440px-Solomon_by_Simeon_Solomon.jpg",
+                    "type": "image"},
+                "text": {"headline": f"The Wisdom of {wave_name}",
+                         "text": "Written during the Golden Age of Israel's Monarchy."}
+            }]
+        }
+
+    # --- ERA OF DAVID (Psalms) ---
+    elif wave_name == "Psalms":
+        return {
+            "All": [{
+                "start_date": {"year": -1010},
+                "display_date": "The United Kingdom",
+                "background": {"color": "#1e8449"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/King_David_by_Guido_Reni.jpg/440px-King_David_by_Guido_Reni.jpg",
+                    "type": "image"},
+                "text": {"headline": "The Songs of Israel",
+                         "text": "Poetry and worship collected largely during the reign of King David."}
+            }]
+        }
+
     return {}  # Return empty dict if no wave found
 
 
