@@ -1,4 +1,16 @@
 # books/genesis.py
+import streamlit as st
+import requests
+from streamlit_timeline import timeline
+
+# Always make this the first Streamlit command
+st.set_page_config(
+    page_title="Genesis Flood Timeline",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# 3. Cached Bible API Function
 
 def get_data():
     """Provides data to the superior script."""
