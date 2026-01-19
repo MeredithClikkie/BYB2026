@@ -7,6 +7,7 @@ import requests
 import utils
 from utils import is_blacklisted
 from streamlit_timeline import timeline
+import data_manager as dm
 from data_manager import get_timeline_events
 
 # 1. PAGE SETUP (Must be the very first command)
@@ -46,42 +47,45 @@ def get_fallback_timeline(reference):
     book = reference.split()[0].title()
     return db.get(book, [])
 
-
-# --- 4. SESSION STATE INITIALIZATION ---
+# --- 1. INITIALIZATION ---
 if "run_analysis" not in st.session_state:
     st.session_state.run_analysis = False
 
-# --- 5. SIDEBAR SETTINGS & NAVIGATION ---
+# --- 2. SIDEBAR NAVIGATION & SELECTION ---
 st.sidebar.header("Navigation")
+book = st.sidebar.selectbox("Choose a Book", list(dm.BIBLE_CHAPTER_COUNTS.keys()))
+chapter = st.sidebar.number_input("Chapter", 1, dm.BIBLE_CHAPTER_COUNTS[book], value=1)
 
-# Home Button: Resets the app to the Welcome Page
+# Combined Reset & Home
 if st.sidebar.button("🏠 Home / Reset"):
     st.session_state.run_analysis = False
     st.rerun()
 
+# --- 3. STUDY SETTINGS ---
 st.sidebar.divider()
-
 st.sidebar.header("Study Settings")
-ref = st.sidebar.text_input("Enter Reference:", "Genesis 1:1")
+ref = st.sidebar.text_input("Reference:", "Genesis 1:1")
 show_stats = st.sidebar.checkbox("Show Stats", value=True)
 
 versions = {"World English Bible": "web", "King James Version": "kjv"}
-translation_code = versions[st.sidebar.selectbox("Version:", list(versions.keys()))]
+v_choice = st.sidebar.selectbox("Version:", list(versions.keys()))
+translation_code = versions[v_choice]
 
-# SINGLE Analyze button logic
 if st.sidebar.button("🔍 Analyze Scripture"):
     st.session_state.run_analysis = True
 
+# --- 4. EXTERNAL RESOURCES ---
+st.sidebar.divider()
+st.sidebar.subheader("📚 Study Resources")
+gq_url = dm.get_gotquestions_url(book, chapter)
+st.sidebar.link_button(f"Study {book} {chapter} on GotQuestions", gq_url)
+
+# --- 5. VISUALIZATION CONFIG ---
 options = {
     "ents": ["GOD", "PERSON", "PEOPLE GROUPS", "GPE", "tøp"],
-    "colors": {
-        "GOD": "purple",
-        "PERSON": "#4facfe",
-        "PEOPLE GROUPS": "orange",
-        "GPE": "#98FB98",
-        "tøp": "red"
-    }
+    "colors": {"GOD": "purple", "PERSON": "#4facfe", "PEOPLE GROUPS": "orange", "GPE": "#98FB98", "tøp": "red"}
 }
+
 
 # --- 6. PAGE RENDERING ---
 
@@ -256,3 +260,102 @@ else:
         if st.button("Back Home"):
             st.session_state.run_analysis = False
             st.rerun()
+
+import streamlit as st
+import data_manager as dm
+import random
+
+# --- PAGE SETUP ---
+st.set_page_config(page_title="Bible Game Center", page_icon="📖")
+st.title("📖 Bible Game Center")
+
+# --- INITIALIZE GLOBAL STATE ---
+if 'score' not in st.session_state: st.session_state.score = 0
+if 'current_q' not in st.session_state: st.session_state.current_q = 0
+if 'game_over' not in st.session_state: st.session_state.game_over = False
+
+# --- SIDEBAR: NAVIGATION ---
+st.sidebar.header("Settings")
+book = st.sidebar.selectbox("Book", list(dm.BIBLE_CHAPTER_COUNTS.keys()))
+max_chaps = dm.BIBLE_CHAPTER_COUNTS[book]
+chapter = st.sidebar.number_input("Chapter", 1, max_chaps, value=1, key = "sidebar_chapter_selector")
+
+if st.sidebar.button("Reset All Games"):
+    for key in ['score', 'current_q', 'game_over', 'hangman_word', 'guessed_letters']:
+        if key in st.session_state: del st.session_state[key]
+    st.rerun()
+
+tab1, tab2 = st.tabs(["📝 Trivia", "🔤 Hangman"])
+
+# --- TAB 1: TRIVIA ---
+with tab1:
+    # 1. Try to get manual trivia first
+    questions = dm.get_trivia_questions(book, chapter)
+
+    # 2. FALLBACK: If no manual trivia, generate it!
+    if not questions:
+        st.info("No manual trivia found. Generating automatic questions...")
+        questions = dm.get_auto_trivia(book, chapter)
+    if questions and not st.session_state.game_over:
+        q = questions[st.session_state.current_q]
+        st.subheader(f"Question {st.session_state.current_q + 1}")
+        st.write(f"### {q['question']}")
+
+        with st.form("trivia_form"):
+            choice = st.radio("Answer:", q['options'])
+            if st.form_submit_button("Submit"):
+                if choice == q['answer']:
+                    st.success(f"Correct! {q.get('reference', '')}")
+                    st.session_state.score += 1
+                else:
+                    st.error(f"Wrong! Answer: {q['answer']}")
+
+                if st.session_state.current_q + 1 < len(questions):
+                    st.session_state.current_q += 1
+                else:
+                    st.session_state.game_over = True
+                st.button("Continue")
+
+    elif st.session_state.game_over:
+        st.success(f"Finished! Score: {st.session_state.score}/{len(questions)}")
+    else:
+        st.info("No manual trivia found. Use Hangman for auto-generation!")
+
+# --- TAB 2: HANGMAN ---
+with tab2:
+    # 1. Generation Logic
+    if st.button("Generate New Word from Chapter"):
+        data = dm.generate_auto_game(book, chapter)
+        if data and data['game_words']:
+            st.session_state.hangman_word = random.choice(data['game_words'])
+            st.session_state.guessed_letters = []
+            st.session_state.attempts_left = 6
+            st.rerun()
+
+    # 2. Display Logic (Fixed: Outside the button so it persists)
+    if 'hangman_word' in st.session_state:
+        word = st.session_state.hangman_word
+        guesses = st.session_state.guessed_letters
+
+        display = [l if l in guesses else "_" for l in word]
+        st.subheader(" ".join(display))
+
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            char = st.text_input("Guess a letter:", max_chars=1, key="input").upper()
+        with col2:
+            if st.button("Guess") and char:
+                if char not in guesses:
+                    guesses.append(char)
+                    if char not in word: st.session_state.attempts_left -= 1
+                st.rerun()
+
+        st.write(f"Lives: {'❤️' * st.session_state.attempts_left} | Guessed: {', '.join(guesses)}")
+
+        if "_" not in display:
+            st.balloons();
+            st.success(f"You won! Word: {word}")
+        elif st.session_state.attempts_left <= 0:
+            st.error(f"Game Over! Word: {word}")
+
+

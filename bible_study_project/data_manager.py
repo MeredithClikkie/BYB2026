@@ -266,32 +266,28 @@ def get_master_data(wave_name, chapter = "1"):
 
     return {}
 
-
 def get_timeline_events(book, chapter):
-    # Ensure events starts as a list!
-    # Sort everything by year before returning
-
+    # Initialize as an empty list so we can always append to it
     events = []
-    # Step 1: Get data from master
+
+    # Step 1: Get data from master (SOFT CHECK)
     wave_data = get_master_data(book, chapter)
 
-    if not wave_data:
-        return [], 0
+    # Only process wave_data if it actually exists
+    if wave_data:
+        if chapter == "All":
+            for ch_events in wave_data.values():
+                if isinstance(ch_events, list):
+                    events.extend(ch_events)
+        else:
+            # Check for specific chapter or the Gospel harmony key
+            events = wave_data.get(str(chapter), wave_data.get("current_chapter", []))
 
-    # Handle the key structure
-    if chapter == "All":
-
-        for ch_events in wave_data.values():
-            events.extend(ch_events)
-    else:
-        # Check for specific chapter or the Gospel harmony key
-        events = wave_data.get(str(chapter), wave_data.get("current_chapter", []))
-
-    # Step 2: ADD PERMANENT JOURNEYS (For Acts & Epistles)
-    # Note: We only add these for New Testament books to keep the timeline relevant
+    # Step 2: ADD PERMANENT JOURNEYS (Acts & Epistles)
     nt_books = ["Acts", "Romans", "Galatians", "Ephesians", "Philippians", "Colossians", "Hebrews", "James"]
+    gospels = ["Matthew", "Mark", "Luke", "John"]
 
-    if book in nt_books or book in ["Matthew", "Mark", "Luke", "John"]:
+    if book in nt_books or book in gospels:
         journeys = [
             {"year": 46, "head": "⛵ 1st Journey (Acts 13-14)", "color": "#1b4f72",
              "text": "Paul & Barnabas sent from Antioch to Cyprus and Galatia."},
@@ -332,12 +328,12 @@ def get_timeline_events(book, chapter):
             }
         })
 
-    # Step 4: SORTING & INDEXING
+    # Step 4: FINAL CHECK & SORTING
     if not events:
         return [], 0
 
-    # Sort by year
-    events = sorted(events, key=lambda x: x["start_date"]["year"])
+    # Ensure every event has a year to avoid sorting errors
+    events = sorted(events, key=lambda x: x.get("start_date", {}).get("year", 0))
 
     # Find the "Current Intel" index to center the timeline
     start_index = 0
@@ -346,5 +342,207 @@ def get_timeline_events(book, chapter):
             start_index = i
             break
 
-    # Return the list. In biblestudy_gpp.py, you will wrap this in {"events": events, "start_at_slide": start_index}
     return events, start_index
+
+import random
+
+# Structured data for your games
+# You can expand this dictionary for every book/chapter
+BIBLE_DATA = {
+    "Genesis": {
+        1: {
+            "trivia": [
+                {
+                    "question": "What did God create on the first day?",
+                    "options": ["Animals", "Light", "Plants", "The Sun"],
+                    "answer": "Light",
+                    "reference": "Genesis 1:3-5"
+                },
+                {
+                    "question": "How did God describe His creation at the end of day one?",
+                    "options": ["It was okay", "It was good", "It was perfect", "It was finished"],
+                    "answer": "It was good",
+                    "reference": "Genesis 1:4"
+                }
+            ],
+            "hangman_words": ["CREATION", "HEAVENS", "EARTH", "SPIRIT"]
+        },
+        2: {
+            "trivia": [
+                {
+                    "question": "Out of what did God form man?",
+                    "options": ["Stone", "Dust of the ground", "Water", "A cloud"],
+                    "answer": "Dust of the ground",
+                    "reference": "Genesis 2:7"
+                }
+            ],
+            "hangman_words": ["EDEN", "ADAM", "EVE", "RIVER", "EUPHRATES"]
+        }
+    },
+    "Exodus": {
+        1: {
+            "trivia": [],
+            "hangman_words": ["EGYPT", "PHARAOH", "MIDWIVES"]
+        }
+    }
+}
+
+def get_trivia_questions(book, chapter):
+    """Fetches trivia questions for a specific chapter."""
+    return BIBLE_DATA.get(book, {}).get(chapter, {}).get("trivia", [])
+
+def get_hangman_word(book, chapter):
+    """Fetches a random word for Hangman for a specific chapter."""
+    words = BIBLE_DATA.get(book, {}).get(chapter, {}).get("hangman_words", ["BIBLE"])
+    return random.choice(words).upper()
+
+def get_available_books():
+    """Returns a list of books currently in the database."""
+    return list(BIBLE_DATA.keys())
+
+def get_available_chapters(book):
+    """Returns a list of chapters available for a chosen book."""
+    return list(BIBLE_DATA.get(book, {}).keys())
+
+
+BIBLE_CHAPTER_COUNTS = {
+    "Genesis": 50, "Exodus": 40, "Leviticus": 27, "Numbers": 36, "Deuteronomy": 34,
+    "Joshua": 24, "Judges": 21, "Ruth": 4, "1 Samuel": 31, "2 Samuel": 24,
+    "1 Kings": 22, "2 Kings": 25, "1 Chronicles": 29, "2 Chronicles": 36,
+    "Ezra": 10, "Nehemiah": 13, "Esther": 10, "Job": 42, "Psalms": 150,
+    "Proverbs": 31, "Ecclesiastes": 12, "Song of Solomon": 8, "Isaiah": 66,
+    "Jeremiah": 52, "Lamentations": 5, "Ezekiel": 48, "Daniel": 12, "Hosea": 14,
+    "Joel": 3, "Amos": 9, "Obadiah": 1, "Jonah": 4, "Micah": 7, "Nahum": 3,
+    "Habakkuk": 3, "Zephaniah": 3, "Haggai": 2, "Zechariah": 14, "Malachi": 4,
+    "Matthew": 28, "Mark": 16, "Luke": 24, "John": 21, "Acts": 28,
+    "Romans": 16, "1 Corinthians": 16, "2 Corinthians": 13, "Galatians": 6,
+    "Ephesians": 6, "Philippians": 4, "Colossians": 4, "1 Thessalonians": 5,
+    "2 Thessalonians": 3, "1 Timothy": 6, "2 Timothy": 4, "Titus": 3,
+    "Philemon": 1, "Hebrews": 13, "James": 5, "1 Peter": 5, "2 Peter": 3,
+    "1 John": 5, "2 John": 1, "3 John": 1, "Jude": 1, "Revelation": 22
+}
+
+import streamlit as st
+import data_manager as dm
+
+# 1. User picks a book
+book_list = list(dm.BIBLE_CHAPTER_COUNTS.keys())
+selected_book = st.selectbox("Choose a Book", book_list)
+
+# 2. Get the maximum chapters for THAT specific book
+max_chapters = dm.BIBLE_CHAPTER_COUNTS[selected_book]
+
+# 3. User picks a chapter (it will only show numbers between 1 and max)
+selected_chapter = st.number_input(
+    f"Choose a Chapter (1 to {max_chapters})",
+    min_value=1,
+    max_value=max_chapters
+)
+
+st.write(f"Now loading the game for **{selected_book} Chapter {selected_chapter}**...")
+
+import requests
+import random
+import re
+
+# Master list of "boring" words to ignore when picking game words
+STOP_WORDS = {"the", "and", "shall", "unto", "them", "their", "said", "with", "from", "that"}
+
+
+def fetch_chapter_text(book, chapter):
+    """Pulls full chapter text from Bible-Api.com."""
+    url = f"https://bible-api.com/{book}+{chapter}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()["text"]
+    return None
+
+
+def generate_auto_game(book, chapter):
+    """Automated logic: Fetch -> Strip -> Select -> Generate"""
+    text = fetch_chapter_text(book, chapter)
+    if not text:
+        return None
+
+    # 1. STRIP: Remove punctuation and lowercase everything
+    words_only = re.findall(r'\b\w{5,}\b', text.lower())  # Only words 5+ letters long
+
+    # 2. FILTER: Remove common 'stop words'
+    keywords = [w for w in words_only if w not in STOP_WORDS]
+
+    # 3. SELECT: Pick 5 unique random words for Hangman/Trivia
+    selected_words = list(set(random.sample(keywords, min(len(keywords), 10))))
+
+    return {
+        "text_preview": text[:500] + "...",
+        "game_words": [w.upper() for w in selected_words]
+    }
+
+
+import requests
+import re
+import random
+
+
+def get_auto_trivia(book, chapter):
+    """Fetches text and creates fill-in-the-blank questions on the fly."""
+    url = f"https://bible-api.com/{book}+{chapter}"
+    try:
+        data = requests.get(url).json()
+        text = data['text']
+        # Find verses that are a good length (between 60 and 150 chars)
+        verses = [v for v in text.split('\n') if 60 < len(v) < 150]
+
+        auto_questions = []
+        for v in random.sample(verses, min(len(verses), 3)):
+            words = re.findall(r'\b\w{5,}\b', v)  # Find words with 5+ letters
+            if words:
+                answer = random.choice(words)
+                # Create the question by replacing the answer word with blanks
+                question_text = v.replace(answer, "_______")
+
+                # Generate 'distractors' (wrong answers) from other words in the verse
+                other_words = list(set(words) - {answer})
+                options = [answer] + random.sample(other_words, min(len(other_words), 3))
+                random.shuffle(options)
+
+                auto_questions.append({
+                    "question": f"Fill in the blank: \n\n '{question_text}'",
+                    "options": options,
+                    "answer": answer,
+                    "reference": f"{book} {chapter}"
+                })
+        return auto_questions
+    except:
+        return []
+
+
+def get_gotquestions_url(book, chapter):
+    # GotQuestions usually uses a format like:
+    # https://www.gotquestions.org/Book-of-Genesis.html (for books)
+    # or specific articles for popular chapters.
+
+    # Clean the book name (replace spaces with hyphens)
+    formatted_book = book.replace(" ", "-")
+
+    # Base URL for the Book Overview
+    return f"https://www.gotquestions.org/Book-of-{formatted_book}.html"
+
+
+# A sample mapping - you can expand this for all 66 books
+BP_VIDEO_IDS = {
+    "Genesis": "G0fMsdSjC9Q",  # Overview: Genesis 1-11
+    "Exodus": "jH_aojNJM3E",  # Overview: Exodus 1-18
+    "Romans": "ej2-grduu_o",  # Overview: Romans 1-4
+    "Philippians": "oE9at4athAg",  # Overview: Philippians
+}
+
+
+def get_bible_project_url(book):
+    # If the book is in our list, return the YouTube link
+    video_id = BP_VIDEO_IDS.get(book)
+    if video_id:
+        return f"https://www.youtube.com/watch?v={video_id}"
+
+    # Fallback: Search BibleProject for that book
+    return f"https://www.youtube.com/results?search_query=BibleProject+{book}+Overview"
