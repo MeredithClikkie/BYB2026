@@ -16,3 +16,6 @@ def get_specific_patterns():
         {"label": "GPE", "pattern": [{"LOWER": "eden"}]},
         {"label": "GPE", "pattern": [{"LOWER": "ararat"}]}
     ]
+
+
+

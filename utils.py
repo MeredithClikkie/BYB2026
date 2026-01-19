@@ -1,6 +1,9 @@
-import streamlit as st
-
 # utils.py
+
+import streamlit as st
+import json
+from streamlit_timeline import timeline
+
 
 # BLACKLIST: Add words here that you want the AI to STOP highlighting
 # (Case sensitive usually, so add variations if needed)
@@ -187,7 +190,24 @@ def get_base_patterns():
     ]
 
 
-
 def apply_custom_css():
     import streamlit as st
     st.markdown("<style> .main { background-color: #f5f5f5; } </style>", unsafe_allow_html=True)
+
+
+
+def display_bible_timeline(book_name):
+    """Loads and renders the timeline for a specific book."""
+    try:
+        with open('data/bible_timelines.json', 'r') as f:
+            all_data = json.load(f)
+
+        # Filter data for the specific book
+        book_data = all_data.get(book_name)
+
+        if book_data:
+            timeline(book_data, height=600)
+        else:
+            st.warning(f"No timeline data available for {book_name}.")
+    except FileNotFoundError:
+        st.error("Timeline data file not found.")
