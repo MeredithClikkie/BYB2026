@@ -15,9 +15,18 @@ def get_bible_text(reference, trans="web"):
 def get_data(full_reference):
     # Extracts chapter number (e.g., "Exodus 7:1" -> "7")
     try:
-        chapter = full_reference.split(" ")[1].split(":")[0]
-    except:
+        # 1. Clean the string and split into words
+        parts = full_reference.strip().split()
+        # 2. The second part is always the numbers (7 or 7:1)
+        numbers = parts[1]
+        # 3. Split by ":" in case verses were included
+        chapter = numbers.split(":")[0]
+    except Exception as e:
         chapter = "1"
+
+    # --- DEBUGGING TIP ---
+    # Uncomment the line below to see exactly what 'chapter' the code is looking for
+    # st.write(f"DEBUG: Searching for chapter '{chapter}'")
 
     all_chapters = {
         # --- CHAPTER 3: THE BURNING BUSH ---
