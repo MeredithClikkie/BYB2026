@@ -8,9 +8,10 @@ import os
 import sys
 import utils
 from utils import is_blacklisted
+from streamlit_timeline import timeline
 
 # 1. PAGE SETUP
-st.set_page_config(page_title="Bible Study Partner", layout="wide")
+st.set_page_config(page_title="Bible Study: God, People & Places", layout="wide")
 
 
 # --- 1. AI SETUP ---
