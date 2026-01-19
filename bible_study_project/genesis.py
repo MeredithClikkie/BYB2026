@@ -25,12 +25,23 @@ def get_data(full_reference):
         "1": [
             {
                 "start_date": {"year": -4004},
-                "display_date": "Day 1",
-                "background": {"color": "#1a202c"},
+                "display_date": "Day 1-3",
+                "background": {"color": "#000000"},
                 "media": {
-                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/The_Creation_of_Light_by_Gustave_Dore.jpg/440px-The_Creation_of_Light_by_Gustave_Dore.jpg",
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/The_Creation_of_Light_by_Gustave_Dore.jpg",
                     "type": "image"},
-                "text": {"headline": "Let There Be Light", "text": get_bible_text("Genesis 1:3")}
+                "text": {"headline": "Forming the World",
+                         "text": f"<b>Day 1:</b> Light out of Darkness.<br><b>Day 2:</b> The Firmament.<br><b>Day 3:</b> Dry land and seas."}
+            },
+            {
+                "start_date": {"year": -4004},
+                "display_date": "Day 4-6",
+                "background": {"color": "#1a365d"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Creation_of_the_Sun_and_Moon_by_Dore.jpg",
+                    "type": "image"},
+                "text": {"headline": "Filling the World",
+                         "text": f"<b>Day 4:</b> Sun, Moon, and Stars.<br><b>Day 5:</b> Creatures of Sky and Sea.<br><b>Day 6:</b> Land animals and Mankind."}
             }
         ],
 

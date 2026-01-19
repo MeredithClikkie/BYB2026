@@ -78,7 +78,24 @@ def get_data(full_reference):
                     "type": "image"},
                 "text": {"headline": "🌊 Crossing the Red Sea", "text": get_bible_text("Exodus 14:21")}
             }
-        ]
+        ],
+        
+        "20": [
+            {
+                "start_date": {"year": -1445},
+                "display_date": "Mount Sinai",
+                "background": {"color": "#4A5568"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Gustave_Dor%C3%A9_-_The_Moses_and_the_Ten_Commandments.jpg/440px-Gustave_Dor%C3%A9_-_The_Moses_and_the_Ten_Commandments.jpg",
+                    "type": "image",
+                    "caption": "Moses receiving the Law"
+                },
+                "text": {
+                    "headline": "📜 The Ten Commandments",
+                    "text": "God delivers the Decalogue to Israel, establishing the moral foundation of the Covenant."
+                }
+            }
+        ],
     }
 
     events = all_chapters.get(chapter, [])

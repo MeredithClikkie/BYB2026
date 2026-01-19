@@ -179,38 +179,44 @@ else:
     if raw_text:
         book_name = ref.split()[0].title()
 
-        # --- A. TIMELINE SECTION (Top of Page) ---
+        # --- A. TIMELINE SECTION (The Protected Version) ---
         import importlib
+        # 1. KEEP YOUR WORKING GENESIS LOGIC
+        if book_name == "Genesis":
+            st.subheader(f"⏳ Historical Timeline: {book_name}")
+            timeline_data = genesis.get_data(ref)  # This is your current working line
+            timeline(timeline_data, height=600)
 
-        # We try to dynamically load a module named after the book (e.g., genesis.py)
-        try:
-            # Look for a file named exactly like the book (lowercase)
-            book_module = importlib.import_module(book_name.lower())
+        # 2. KEEP YOUR WORKING EXODUS LOGIC
+        elif book_name == "Exodus":
+            st.subheader(f"⏳ Historical Timeline: {book_name}")
+            timeline_data = exodus.get_data(ref)  # This is your current working line
+            timeline(timeline_data, height=600)
 
-            st.subheader(f"⏳ Historical Chronology: {book_name}")
-            # All your book files must have the get_data(ref) function
-            timeline_data = book_module.get_data(ref)
+        # 3. NEW GOSPEL WAVE LOGIC (The New "Switchboard")
+        elif book_name in ["Matthew", "Mark", "Luke", "John"]:
+            import importlib
 
-            # Only show the timeline if the specific chapter has events
-            if timeline_data and timeline_data.get("events"):
-                timeline(timeline_data, height=600)
-            else:
-                st.info(f"Detailed timeline for this chapter of {book_name} is under construction.")
+            try:
+                # This points all four books to your new gospels.py file
+                book_module = importlib.import_module("gospels")
+                st.subheader(f"⏳ Gospel Harmony: {book_name}")
+                timeline_data = book_module.get_data(ref)
+                if timeline_data and timeline_data.get("events"):
+                    timeline(timeline_data, height=600)
+            except ImportError:
+                st.error("Gospels module not found. Check gospels.py location.")
 
-        except ImportError:
-            # FALLBACK: If book.py doesn't exist, use the Plotly chart
+        # 4. EVERYTHING ELSE (Fallback)
+        else:
             events = get_fallback_timeline(ref)
             if events:
-                st.subheader(f"⏳ General Timeline: {book_name}")
+                st.subheader(f"⏳ Timeline: {book_name}")
                 df = pd.DataFrame(events)
                 fig = px.line(df, x="Date", y=[0] * len(df), markers=True, text="Event")
-                fig.update_layout(
-                    height=250,
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    font=dict(color="#FCE300")  # Matching Bandito Yellow
-                )
+                fig.update_layout(height=250, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
                 st.plotly_chart(fig, use_container_width=True)
+
         # --- B. TEXT HIGHLIGHTING SECTION ---
         st.divider()
         st.subheader(f"📖 Scripture Analysis: {ref}")
