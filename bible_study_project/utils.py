@@ -121,7 +121,15 @@ def get_base_patterns():
         {"label": "PERSON", "pattern": [{"LOWER": "john"}, {"LOWER": "the"},{"LOWER": "baptist"}]},
         {"label": "PERSON", "pattern": [{"LOWER": "john"}, {"LOWER": "the"}, {"LOWER": "baptizer"}]},
         {"label": "PEOPLE", "pattern": [{"LOWER": "zebedee"}]},
-
+        {"label": "PEOPLE", "pattern": [{"LOWER": "shem"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "gomer"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "madia"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "javan"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "tubal"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "meshech"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "nahor"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "haran"}]},
+        {"label": "PEOPLE", "pattern": [{"LOWER": "iscah"}]},
 
 
         # Add patterns for the "PEOPLE GROUPS" category
@@ -139,6 +147,8 @@ def get_base_patterns():
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "pharisees"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "sadducees"}]},
         {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "gentiles"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "chaldees"}]},
+        {"label": "PEOPLE GROUPS", "pattern": [{"LOWER": "chaldeans"}]},
 
         # Add patterns for the "GPE" category
         {"label": "GPE", "pattern": [{"LOWER": "sodom"}]},
@@ -181,6 +191,8 @@ def get_base_patterns():
         {"label": "GPE", "pattern": [{"LOWER": "zabulon"}]},
         {"label": "GPE", "pattern": [{"LOWER": "nephthalim"}]},
         {"label": "GPE", "pattern": [{"LOWER": "the"}, {"LOWER": "kingdom"}, {"LOWER": "of"}, {"LOWER": "heaven"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "ararat"}]},
+        {"label": "GPE", "pattern": [{"LOWER": "ur"}]},
 
         # Define patterns for the "TØP" category
         {"label": "tøp", "pattern": [{"LOWER": "necromancer"}]},

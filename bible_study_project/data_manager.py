@@ -275,6 +275,9 @@ def get_timeline_events(book, chapter):
     # Step 1: Get data from master
     wave_data = get_master_data(book, chapter)
 
+    if not wave_data:
+        return [], 0
+
     # Handle the key structure
     if chapter == "All":
 
@@ -331,7 +334,7 @@ def get_timeline_events(book, chapter):
 
     # Step 4: SORTING & INDEXING
     if not events:
-        return []
+        return [], 0
 
     # Sort by year
     events = sorted(events, key=lambda x: x["start_date"]["year"])
