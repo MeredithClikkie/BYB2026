@@ -1,5 +1,15 @@
 from streamlit_timeline import timeline
 
+import streamlit as st
+
+# Always make this the first Streamlit command
+st.set_page_config(
+    page_title="Genesis Flood Timeline",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+
 # Genesis Flood Data (Simplified JSON format)
 data = {
     "events": [
