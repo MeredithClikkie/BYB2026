@@ -5,6 +5,9 @@ from streamlit_timeline import timeline
 
 # Page Configuration (Removes top padding)
 st.set_page_config(layout="wide")
+
+# THE "TOP OF PAGE" CSS
+# This removes the gap and styles the vertical timeline
 st.markdown("""
     <style>
         .block-container { padding-top: 1rem; }
@@ -35,14 +38,13 @@ def get_bible_text(reference, trans="web"):
         url = f"https://bible-api.com/{reference}?translation={trans}"
         response = requests.get(url)
         return response.json()['text'] if response.status_code == 200 else "Scripture not found."
-    except Exception:
+    except:
         return "Error fetching scripture."
 
 
 # 3. Timeline Data Construction
 # We use the approximate Masoretic text year of 2348 BC approx 1,656 years after creation popularized by Archbishop James Ussher
-flood_events = {
-    "events": [
+flood_events = [
         {
             "start_date": {"year": "2348 BC", "month": "2", "day": "10"},
             "text": {
@@ -79,10 +81,41 @@ flood_events = {
             }
         }
     ]
-}
+
+# Option 2:
+# 4. DATA LIST
+# Add as many events as you like here
+# flood_events = [
+#    ("2nd Month, Day 17", "Genesis 7:11", "The Flood Begins"),
+#    ("40 Days Later", "Genesis 7:12", "Rain Stops"),
+#    ("7th Month, Day 17", "Genesis 8:4", "Ark Rests on Ararat"),
+#    ("10th Month, Day 1", "Genesis 8:5", "Mountain Tops Visible"),
+#    ("2nd Month, Day 27", "Genesis 8:14", "Noah Exits the Ark")
+# ]
 
 # 4. Rendering
 st.title("Chronology of the Genesis Flood")
+
+for event in flood_events:
+    # Extract data from your dictionary structure
+    # We use .get() to avoid errors if a key is missing
+    headline = event["text"]["headline"]
+    description = event["text"]["text"]
+
+    # Format the date from the dictionary
+    d = event["start_date"]
+    date_str = f"Year: {d['year']}, Month: {d['month']}, Day: {d['day']}"
+
+    with st.container():
+        st.markdown(f"""
+            <div class="timeline-item">
+                <div class="date-header">{date_str}</div>
+                <div class="ref-text"><strong>{headline}</strong></div>
+            </div>
+        """, unsafe_allow_html=True)
+        # We don't need to call get_bible_text here because
+        # it's already inside your 'description' string!
+        st.info(description)
 
 # This renders the interactive timeline at the top
 timeline(flood_events, height=500)
