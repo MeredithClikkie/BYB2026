@@ -183,13 +183,13 @@ else:
         import importlib
         # 1. KEEP YOUR WORKING GENESIS LOGIC
         if book_name == "Genesis":
-            st.subheader(f"⏳ Historical Timeline: {book_name}")
+            st.subheader(f"⏳ Genesis: The Era of Beginnings")
             timeline_data = genesis.get_data(ref)  # This is your current working line
             timeline(timeline_data, height=600)
 
         # 2. KEEP YOUR WORKING EXODUS LOGIC
         elif book_name == "Exodus":
-            st.subheader(f"⏳ Historical Timeline: {book_name}")
+            st.subheader(f"⏳ Exodus: The Great Deliverance")
             timeline_data = exodus.get_data(ref)  # This is your current working line
             timeline(timeline_data, height=600)
 
@@ -200,12 +200,43 @@ else:
             try:
                 # This points all four books to your new gospels.py file
                 book_module = importlib.import_module("gospels")
-                st.subheader(f"⏳ Gospel Harmony: {book_name}")
+                st.subheader(f"⏳ The Life of Christ: Gospel Harmony")
                 timeline_data = book_module.get_data(ref)
                 if timeline_data and timeline_data.get("events"):
                     timeline(timeline_data, height=600)
             except ImportError:
                 st.error("Gospels module not found. Check gospels.py location.")
+
+        # NEW WAVE ROUTING
+        elif book_name in ["Acts", "Romans", "Revelation"]:
+            import importlib
+
+            try:
+                book_module = importlib.import_module("church")
+                timeline_data = book_module.get_data(ref)
+
+                # SAFETY CHECK: Only render if there are events
+                if timeline_data and len(timeline_data.get("events", [])) > 0:
+                    st.subheader("⛵ Apostolic Mission & The Early Church")
+                    timeline(timeline_data, height=600)
+                else:
+                    # If no specific chapter data, show a placeholder message or nothing
+                    st.info(f"Timeline intelligence for {ref} is currently being decrypted. Stay low.")
+
+            except ImportError:
+                st.error("Church module not found.")
+
+        elif book_name in ["Psalms", "Proverbs", "Ecclesiastes", "Job"]:
+            st.subheader("✍️ The Golden Age of Hebrew Poetry")
+            book_module = importlib.import_module("wisdom")
+            timeline_data = book_module.get_data(ref)
+            timeline(timeline_data, height=600)
+
+        elif book_name in ["Isaiah", "Jeremiah", "Ezekiel", "Daniel", "Malachi"]:
+            st.subheader("📢 Prophetic Voice: The Exile & Restoration")
+            book_module = importlib.import_module("prophets")
+            timeline_data = book_module.get_data(ref)
+            timeline(timeline_data, height=600)
 
         # 4. EVERYTHING ELSE (Fallback)
         else:
