@@ -3,7 +3,16 @@ import streamlit as st
 import requests
 from streamlit_timeline import timeline
 
-# 1. Helper Function
+# Page Configuration (Removes top padding)
+st.set_page_config(layout="wide")
+st.markdown("""
+    <style>
+        .block-container { padding-top: 1rem; }
+    </style>
+    """, unsafe_allow_html=True)
+
+
+# Helper Function
 def get_bible_text(reference, trans="web"):
     try:
         url = f"https://bible-api.com/{reference}?translation={trans}"
@@ -12,13 +21,6 @@ def get_bible_text(reference, trans="web"):
     except Exception:
         return "Error fetching scripture."
 
-# 2. Page Configuration (Removes top padding)
-st.set_page_config(layout="wide")
-st.markdown("""
-    <style>
-        .block-container { padding-top: 1rem; }
-    </style>
-    """, unsafe_allow_html=True)
 
 # 3. Timeline Data Construction
 # We use the approximate Masoretic text year of 2348 BC approx 1,656 years after creation popularized by Archbishop James Ussher
