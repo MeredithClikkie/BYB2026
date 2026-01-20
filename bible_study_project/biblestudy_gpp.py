@@ -1,5 +1,4 @@
 import streamlit as st
-import requests
 import spacy
 import random
 import re
@@ -7,14 +6,12 @@ from streamlit_timeline import timeline
 import data_manager as dm
 
 # --- 1. PAGE SETUP ---
-st.set_page_config(page_title="Bible Study Partner", layout="wide", page_icon="📖")
-
+st.set_page_config(page_title="Trench Study AI", layout="wide", page_icon="📖")
 
 # --- 2. AI & NLP SETUP ---
 @st.cache_resource
 def load_nlp():
     return spacy.load("en_core_web_sm")
-
 
 nlp = load_nlp()
 
@@ -23,66 +20,65 @@ if "run_analysis" not in st.session_state: st.session_state.run_analysis = False
 if 'score' not in st.session_state: st.session_state.score = 0
 if 'current_q' not in st.session_state: st.session_state.current_q = 0
 if 'game_over' not in st.session_state: st.session_state.game_over = False
+if 'book_choice' not in st.session_state: st.session_state.book_choice = 'Genesis'
+if 'chap_choice' not in st.session_state: st.session_state.chap_choice = 1
 
-# --- 4. SIDEBAR NAVIGATION (The Master Controller) ---
+# --- 4. GLOBAL STATE SYNC (The Master variables) ---
+book_list = list(dm.BIBLE_CHAPTER_COUNTS.keys())
+book = st.session_state.book_choice
+chapter = st.session_state.chap_choice
+
+# --- 5. SIDEBAR NAVIGATION ---
 st.sidebar.header("📡 Mission Briefing")
 
-# A. Mission Sync Logic
-plan_options = list(dm.READING_PLANS.keys())
-plan_choice = st.sidebar.selectbox("Active Plan", plan_options)
-day_num = st.sidebar.number_input("Mission Day", 1, 365, value=1)
+# A. Single Command Option (Target Reference)
+ref = st.sidebar.text_input("🎯 Target Reference:", value=f"{book} {chapter}", key="ref_input")
 
-if st.sidebar.button("🎯 Sync to Today's Reading"):
-    mission = dm.READING_PLANS[plan_choice].get(day_num)
-    if mission:
-        st.session_state.book_choice = mission['book']
-        st.session_state.chap_choice = mission['chap']
-        st.rerun()
-
-st.sidebar.divider()
-
-# B. Smart Selection
-default_book = st.session_state.get('book_choice', 'Genesis')
-book_list = list(dm.BIBLE_CHAPTER_COUNTS.keys())
-book_index = book_list.index(default_book) if default_book in book_list else 0
-
-book = st.sidebar.selectbox("Current Book", book_list, index=book_index)
-
-max_chaps = dm.BIBLE_CHAPTER_COUNTS[book]
-default_chap = st.session_state.get('chap_choice', 1)
-safe_chap = default_chap if default_chap <= max_chaps else 1
-
-chapter = st.sidebar.number_input("Chapter", 1, max_chaps, value=safe_chap, key="master_chap")
-
-# C. Home / Reset
-if st.sidebar.button("🏠 Home / Reset"):
-    st.session_state.run_analysis = False
-    if 'book_choice' in st.session_state: del st.session_state.book_choice
-    if 'chap_choice' in st.session_state: del st.session_state.chap_choice
-    st.rerun()
-
-st.sidebar.divider()
-st.sidebar.header("Study Settings")
-
-# D. SMART PARSER: Syncs typed text BACK to the timeline variables
-ref = st.sidebar.text_input("Analysis Reference:", value=f"{book} {chapter}", key="ref_input")
-
+# Smart Sync Logic: Updates state immediately if you type a new reference
 if ref != f"{book} {chapter}":
     match = re.match(r"(.+?)\s+(\d+)", ref)
     if match:
-        new_book, new_chap = match.group(1).strip(), int(match.group(2))
-        if new_book in book_list:
-            st.session_state.book_choice, st.session_state.chap_choice = new_book, new_chap
+        p_book = match.group(1).strip()
+        p_chap = int(match.group(2))
+        if p_book in book_list:
+            st.session_state.book_choice = p_book
+            st.session_state.chap_choice = p_chap
             st.rerun()
 
-        # E. Study Hub Configs
-versions = {"World English Bible": "web", "King James Version": "kjv"}
-v_choice = st.sidebar.selectbox("Version:", list(versions.keys()), key="sidebar_v_selector")
-translation_code = versions[v_choice]
-show_stats = st.sidebar.checkbox("Show AI Stats", value=True, key="sidebar_stats_cb")
+st.sidebar.divider()
 
-if st.sidebar.button("🔍 Analyze Mission Scripture", key="deploy_mission_btn"):
+# B. Tactical Override & Plans (Expandable)
+with st.sidebar.expander("🛠️ Manual Overrides & Plans"):
+    b_idx = book_list.index(book) if book in book_list else 0
+    m_book = st.selectbox("Manual Book Select", book_list, index=b_idx, key="manual_sel")
+    if m_book != book:
+        st.session_state.book_choice = m_book
+        st.rerun()
+
+    st.subheader("Mission Plans")
+    plan_choice = st.selectbox("Active Plan", list(dm.READING_PLANS.keys()))
+    day_num = st.number_input("Mission Day", 1, 365, value=1)
+    if st.button("🎯 Sync Plan"):
+        mission = dm.READING_PLANS[plan_choice].get(day_num)
+        if mission:
+            st.session_state.book_choice = mission['book']
+            st.session_state.chap_choice = mission['chap']
+            st.rerun()
+
+st.sidebar.header("Study Settings")
+versions = {"World English Bible": "web", "King James Version": "kjv"}
+v_choice = st.sidebar.selectbox("Version:", list(versions.keys()))
+translation_code = versions[v_choice]
+show_stats = st.sidebar.checkbox("Show AI Stats", value=True)
+
+# C. Deployment & Reset Buttons
+col_a, col_b = st.sidebar.columns(2)
+if col_a.button("🔍 Analyze"):
     st.session_state.run_analysis = True
+    st.rerun()
+
+if col_b.button("🏠 Home"):
+    st.session_state.run_analysis = False
     st.rerun()
 
 if st.sidebar.button("💎 Ned's Insight"):
@@ -94,95 +90,107 @@ options = {
     "colors": {"GOD": "purple", "PERSON": "#4facfe", "PEOPLE GROUPS": "orange", "GPE": "#98FB98", "tøp": "red"}
 }
 
-# --- 5. PAGE RENDERING ---
+# --- 6. PAGE RENDERING ---
 
 # CASE A: THE WELCOME PAGE
 if not st.session_state.run_analysis:
     st.markdown("""<style>.stApp { background-color: #212121; color: white; font-family: monospace; }
         h1, h2, h3 { color: #FCE300 !important; text-transform: uppercase; }</style>""", unsafe_allow_html=True)
 
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        st.markdown("### Welcome to the Trench Study 📖\nThis AI tool helps you navigate the layers of Scripture.")
-        st.info("💡 **Status:** Historical Timelines active. Stay low.")
-    with col2:
+    c1, c2 = st.columns([2, 1])
+    with c1:
+        st.markdown(f"### Welcome to the Trench Study 📖")
+        st.info(f"💡 **Current Intel:** Ready to analyze {book} {chapter}.")
+    with c2:
         st.image("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1000")
-        st.markdown("<div style='text-align: center; color: #FCE300;'>‖—‖ keep your torch lit ‖—‖</div>",
-                    unsafe_allow_html=True)
+        st.markdown("<div style='text-align: center; color: #FCE300;'>‖—‖ keep your torch lit ‖—‖</div>", unsafe_allow_html=True)
 
     st.divider()
-    tab1, tab2, tab3, tab4 = st.tabs(["📝 Trivia", "🔤 Hangman", "📚 Resources", "📓 Journal"])
+    t1, t2, t3, t4 = st.tabs(["📝 Trivia", "🔤 Hangman", "📚 Resources", "📓 Journal"])
 
-    with tab1:  # TRIVIA
+    with t1:
         questions = dm.get_trivia_questions(book, chapter)
         if not questions: questions = dm.get_auto_trivia(book, chapter)
         if questions and not st.session_state.game_over:
             q = questions[st.session_state.current_q]
             with st.form("trivia_form"):
-                choice = st.radio(f"Question {st.session_state.current_q + 1}: {q['question']}", q['options'])
+                choice = st.radio(f"Question: {q['question']}", q['options'])
                 if st.form_submit_button("Submit Answer"):
-                    if choice == q['answer']:
-                        st.success("Correct!")
-                    else:
-                        st.error(f"Wrong! Answer: {q['answer']}")
-                    st.session_state.current_q = (
-                                st.session_state.current_q + 1) if st.session_state.current_q + 1 < len(
-                        questions) else st.session_state.current_q
+                    if choice == q['answer']: st.success("Correct!")
+                    else: st.error(f"Wrong! Answer: {q['answer']}")
+                    st.session_state.current_q = (st.session_state.current_q + 1) if st.session_state.current_q + 1 < len(questions) else st.session_state.current_q
                     if st.session_state.current_q + 1 == len(questions): st.session_state.game_over = True
             if st.button("Continue"): st.rerun()
 
-    with tab2:  # HANGMAN
-        if st.button("Generate New Word"):
+    with t2:
+        if st.button("Generate Word"):
             data = dm.generate_auto_game(book, chapter)
             if data: st.session_state.hangman_word = random.choice(data['game_words'])
             st.rerun()
 
-    with tab3:  # RESOURCES
+    with t3:
         st.header(f"Study Hub: {book} {chapter}")
-        st.link_button("Bible Hub Interlinear", f"https://biblehub.com/{book.lower().replace(' ', '_')}/{chapter}.htm",
-                       use_container_width=True)
-        show_audio = st.toggle("Enable Lofi Study Beats")
-        if show_audio: st.video("https://www.youtube.com/watch?v=qXPoj_VYb3U")
+        st.link_button("Bible Hub Interlinear", f"https://biblehub.com/{book.lower().replace(' ', '_')}/{chapter}.htm")
+        if st.toggle("Enable Lofi Study Beats"): st.video("https://www.youtube.com/watch?v=qXPoj_VYb3U")
 
-    with tab4:  # JOURNAL & PROGRESS
-        st.header("📓 Mission Progress & Journal")
-        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        cols = st.columns(7)
-        for i, d in enumerate(days):
-            cols[i].checkbox(d, key=f"mission_{d}")
-
-        st.divider()
-        st.subheader("📝 LASB Notes (SOAP)")
-        col_l, col_r = st.columns(2)
-        with col_l:
-            s_n = st.text_area("📖 Scripture (S)", placeholder=dm.LASB_PROMPTS['S'], key=f"S_{book}_{chapter}")
-            a_n = st.text_area("💡 Application (A)", placeholder=dm.LASB_PROMPTS['A'], key=f"A_{book}_{chapter}")
-        with col_r:
-            o_n = st.text_area("🧐 Observation (O)", placeholder=dm.LASB_PROMPTS['O'], key=f"O_{book}_{chapter}")
-            p_n = st.text_area("🙏 Prayer (P)", placeholder=dm.LASB_PROMPTS['P'], key=f"P_{book}_{chapter}")
-        if st.button("💾 Archive Notes"): st.success("Notes archived in Trench Logs.")
+    with t4:
+        st.header("📓 Journal")
+        c_l, c_r = st.columns(2)
+        with c_l:
+            st.text_area("📖 Scripture (S)", placeholder=dm.LASB_PROMPTS['S'], key=f"S_{book}_{chapter}")
+        with c_r:
+            st.text_area("🧐 Observation (O)", placeholder=dm.LASB_PROMPTS['O'], key=f"O_{book}_{chapter}")
 
 # CASE B: THE ANALYSIS PAGE
 else:
-    raw_text = dm.get_bible_text(ref, trans=translation_code)
-    if raw_text:
-        events, start_index = dm.get_timeline_events(book, chapter)
-        if events:
-            st.subheader(f"⏳ {book} Intelligence Timeline")
-            timeline({"events": events, "start_at_slide": start_index}, height=500)
+    # 1. FORCE THE SYNC: Re-parse the text box right now
+    import re
 
+    match = re.match(r"(.+?)\s+(\d+)", ref)
+    if match:
+        current_book = match.group(1).strip()
+        current_chap = int(match.group(2))
+    else:
+        # Fallback to session state if regex fails
+        current_book = book
+        current_chap = chapter
+
+    # 2. FETCH TEXT (Using the raw 'ref' from sidebar)
+    raw_text = dm.get_bible_text(ref, trans=translation_code)
+
+    if raw_text:
+        # 3. FETCH TIMELINE (Using the forced variables)
+        events, start_index = dm.get_timeline_events(current_book, current_chap)
+
+        # 4. RENDER TIMELINE FIRST
+        if events:
+            st.subheader(f"⏳ {current_book} {current_chap} Intelligence Timeline")
+            # We wrap it in a container to ensure it renders cleanly
+            with st.container():
+                timeline({"events": events, "start_at_slide": start_index}, height=450)
+        else:
+            st.warning("No specific historical intel found for this sector, but staying alert.")
+
+        # 5. RENDER SCRIPTURE & AI ANALYSIS
         st.divider()
         st.subheader(f"📖 AI Analysis: {ref}")
-        doc = nlp(raw_text)
-        if show_stats:
-            c1, c2 = st.columns(2)
-            c1.metric("Characters", len([e for e in doc.ents if e.label_ == "PERSON"]))
-            c2.metric("Locations", len([e for e in doc.ents if e.label_ == "GPE"]))
 
+        # NLP Processing
+        doc = nlp(raw_text)
+
+        if show_stats:
+            m1, m2 = st.columns(2)
+            m1.metric("Characters", len([e for e in doc.ents if e.label_ == "PERSON"]))
+            m2.metric("Locations", len([e for e in doc.ents if e.label_ == "GPE"]))
+
+        # Displacy Highlighting
         import spacy.displacy as displacy
 
         html = displacy.render(doc, style="ent", options=options)
-        st.markdown(f"<div class='bible-container'>{html}</div>", unsafe_allow_html=True)
+
+        # The CSS ensures the text is readable and themed
+        st.markdown(f"<div style='color: white; background: #2d2d2d; padding: 20px; border-radius: 10px;'>{html}</div>",
+                    unsafe_allow_html=True)
 
         if st.button("← Back to Mission Command"):
             st.session_state.run_analysis = False
