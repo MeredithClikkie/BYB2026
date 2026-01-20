@@ -4,8 +4,7 @@ import re
 import os
 import json
 import streamlit as st
-import genesis
-import exodus
+
 
 # --- DATA STRUCTURES ---
 BIBLE_CHAPTER_COUNTS = {
@@ -116,18 +115,9 @@ def get_master_data(wave_name, chapter="1"):
              "text": {"headline": "The Prophetic Voice",
                       "text": "God speaks to His people before and during the Exile."}}]}
 
-    # Drawer: Final Intel (Revelation)
-    elif wave_name == "Revelation":
-        return {"All": [{"start_date": {"year": 95}, "display_date": "c. AD 95", "background": {"color": "#44337a"},
-                         "text": {"headline": "The Apocalypse", "text": "John's vision on the Island of Patmos."}}]}
+        # --- NEW TESTAMENT DRAWERS ---
 
-    # Drawer 4: The Church/Epistles (General Era Intel)
-    elif wave_name in ["Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians"]:
-        return {"All": [{"start_date": {"year": 55}, "display_date": "c. AD 55", "background": {"color": "#FCE300"},
-                         "text": {"headline": f"Mission Intel: {wave_name}",
-                                  "text": "The spread of the Gospel through the Epistles."}}]}
-
-    # Drawer: Church History
+    # 1. Drawer: Church History (Acts)
     elif wave_name == "Acts":
         return {
             "1": [{
@@ -137,11 +127,43 @@ def get_master_data(wave_name, chapter="1"):
                 "text": {"headline": "The Ascension", "text": "Jesus ascends; the disciples wait in Jerusalem."}
             }],
             "All": [{
-                "start_date": {"year": 30},
-                "display_date": "1st Century",
+                "start_date": {"year": 33},
+                "display_date": "1st Century AD",
+                "background": {"color": "#2D3748"},
                 "text": {"headline": "The Early Church", "text": "The spread of the Gospel from Jerusalem to Rome."}
             }]
         }
+
+    # 2. Drawer: The Epistles (All of them)
+    elif wave_name in [
+        "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians",
+        "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians",
+        "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James",
+        "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude"
+    ]:
+        return {"All": [{
+            "start_date": {"year": 55},
+            "display_date": "c. AD 55",
+            "background": {"color": "#FCE300"},
+            "text": {"headline": f"Mission Intel: {wave_name}", "text": "Apostolic instructions to the early Church."}
+        }]}
+
+    # 3. Drawer: The Apocalypse (Revelation)
+    elif wave_name == "Revelation":
+        return {"All": [{
+            "start_date": {"year": 95},
+            "display_date": "c. AD 95",
+            "background": {"color": "#44337a"},
+            "text": {"headline": "The Apocalypse", "text": "John's vision on the Island of Patmos."}
+        }]}
+
+    # The Silent Years (Between Malachi and Matthew)
+    elif wave_name == "Intertestamental":
+        return {"All": [{
+            "start_date": {"year": -400},
+            "display_date": "400 BC - 4 BC",
+            "text": {"headline": "The Silent Years", "text": "The period between the Old and New Testaments."}
+        }]}
 
         # Drawer 5: The Gospels (Unified Logic)
     elif wave_name in ["Matthew", "Mark", "Luke", "John"]:
@@ -181,33 +203,46 @@ def get_master_data(wave_name, chapter="1"):
         }]
     }
 
+
 def get_timeline_events(book, chapter):
     wave_data = get_master_data(book, chapter)
 
-    # If wave_data exists, fetch the events
+    # 1. FETCH EVENTS (The Search Logic)
     if wave_data:
-        # Hierarchical lookup: Specific Chapter -> Gospel Intel -> General 'All' info
-        events = wave_data.get(str(chapter), wave_data.get("current_chapter", wave_data.get("All", [])))
+        # We look for a specific chapter first.
+        # If not found, we look for 'current_chapter' (Gospels)
+        # Finally, we fall back to 'All' (The General Era/Epistles)
+        events = wave_data.get(str(chapter))
+        if events is None:
+            events = wave_data.get("current_chapter")
+        if events is None:
+            events = wave_data.get("All", [])
     else:
         events = []
 
-    # Permanent Journeys for Acts & Epistles
-    if book in ["Acts", "Romans", "Galatians", "Ephesians", "Philippians", "Colossians"]:
-        # We append these to whatever events we already found
+    # 2. PERMANENT JOURNEYS (Expanded list to cover ALL Epistles)
+    # This list now matches the books in your Epistles Drawer
+    nt_travel_books = [
+        "Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians",
+        "Ephesians", "Philippians", "Colossians", "1 Thessalonians",
+        "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon"
+    ]
+
+    if book in nt_travel_books:
         journeys = [
             {"start_date": {"year": 46}, "display_date": "AD 46", "background": {"color": "#1b4f72"},
              "text": {"headline": "⛵ 1st Journey", "text": "Paul & Barnabas sent from Antioch."}},
             {"start_date": {"year": 59}, "display_date": "AD 59", "background": {"color": "#212f3d"},
              "text": {"headline": "⚓ Voyage to Rome", "text": "Paul travels as a prisoner."}}
         ]
-        # Using list.extend ensures these are added to the list, not replacing it
+        # Use extend to add the journeys to the book-specific events
         events.extend(journeys)
 
     if not events:
         return [], 0
 
-    # SORTING is the most important part! It forces the timeline to rebuild
-    # based on the new dates instead of staying on the old ones.
+    # 3. THE REFRESH TRIGGER
+    # Sorting by year forces the timeline to redraw with new data
     events = sorted(events, key=lambda x: x.get("start_date", {}).get("year", 0))
     return events, 0
 
