@@ -143,28 +143,43 @@ def get_master_data(wave_name, chapter="1"):
             }]
         }
 
-    # Drawer 5: The Gospels (Dynamic Logic)
+        # Drawer 5: The Gospels (Unified Logic)
     elif wave_name in ["Matthew", "Mark", "Luke", "John"]:
         all_events = []
-        # Check for Nativity in Matthew/Luke Chapter 2
+
+        # 1. Check for Nativity in Matthew/Luke Chapter 2
         if (wave_name == "Matthew" and str(chapter) == "2") or (wave_name == "Luke" and str(chapter) == "2"):
-            all_events.append({"start_date": {"year": -4}, "display_date": "4 BC", "background": {"color": "#1a202c"},
-                               "media": {
-                                   "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/The_Nativity_by_Federico_Barocci.jpg/440px-The_Nativity_by_Federico_Barocci.jpg",
-                                   "type": "image"},
-                               "text": {"headline": "✨ The Nativity", "text": "The birth of Jesus in Bethlehem."}})
+            all_events.append({
+                "start_date": {"year": -4},
+                "display_date": "4 BC",
+                "background": {"color": "#1a202c"},
+                "media": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/The_Nativity_by_Federico_Barocci.jpg/440px-The_Nativity_by_Federico_Barocci.jpg",
+                    "type": "image"},
+                "text": {"headline": "✨ The Nativity", "text": "The birth of Jesus in Bethlehem."}
+            })
 
-        # If no specific chapter event was added, add a general fallback
+        # 2. General Gospel Era (If not Ch. 2, or in Mark/John)
         if not all_events:
-            all_events.append({"start_date": {"year": 26}, "display_date": "1st Century AD",
-                               "text": {"headline": f"The Life of Christ: {wave_name}",
-                                        "text": "Historical context for the Gospel era."}})
-        return {"current_chapter": all_events}
+            all_events.append({
+                "start_date": {"year": 26},
+                "display_date": "AD 26",
+                "background": {"color": "#2d3748"},
+                "text": {"headline": f"The Life of Christ: {wave_name}",
+                         "text": "The ministry and historical context of Jesus."}
+            })
 
-    # Safety Net: Catch-all for any book not listed above
-    return {"All": [{"start_date": {"year": 0}, "display_date": "General History",
-                     "text": {"headline": f"{wave_name} Overview", "text": "General intelligence loading..."}}]}
+        # Change the key from "current_chapter" to "All" to match your system
+        return {"All": all_events}
 
+        # Safety Net: Final Catch-all
+    return {
+        "All": [{
+            "start_date": {"year": 0},
+            "display_date": "General History",
+            "text": {"headline": f"{wave_name} Overview", "text": "Historical overview loading..."}
+        }]
+    }
 
 def get_timeline_events(book, chapter):
     wave_data = get_master_data(book, chapter)
