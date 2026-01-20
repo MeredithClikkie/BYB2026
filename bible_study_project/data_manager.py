@@ -566,23 +566,29 @@ JOURNAL_PROMPTS = {
 DEFAULT_PROMPT = "What is the Holy Spirit highlighting to you in this chapter?"
 
 
-# In data_manager.py
+
+# Simplified 90-Day NT Plan (expand as needed)
 READING_PLANS = {
-    "Chronological": {
-        "Day 1": "Genesis 1-3",
-        "Day 2": "Genesis 4-7",
-        # ...
+    "90-Day NT": {
+        1: {"book": "Matthew", "chap": 1},
+        2: {"book": "Matthew", "chap": 2},
+        3: {"book": "Matthew", "chap": 3},
+        # Add more mappings here
     },
-    "New Testament (90 Days)": {
-        "Day 1": "Matthew 1-2",
-        "Day 2": "Matthew 3-4",
+"Old Testament Foundations": {
+        1: {"book": "Genesis", "chap": 1},
+        2: {"book": "Genesis", "chap": 2},
+        3: {"book": "Genesis", "chap": 3},
+    },
+    "Chronological Start": {
+        1: {"book": "Genesis", "chap": 1},
+        2: {"book": "Genesis", "chap": 4},
     }
 }
 
-# In biblestudy_gpp.py Sidebar
-st.sidebar.divider()
-plan_choice = st.sidebar.selectbox("Select Reading Plan", list(dm.READING_PLANS.keys()))
-day_num = st.sidebar.number_input("Day", 1, 365, value=1)
-
-current_reading = dm.READING_PLANS[plan_choice].get(f"Day {day_num}")
-st.sidebar.info(f"📅 Today's Goal: **{current_reading}**")
+LASB_PROMPTS = {
+    "S": "What specific verse is the Spirit highlighting?",
+    "O": "What facts or context do you notice here?",
+    "A": "How does this apply to your current 'Trench'?",
+    "P": "Write a prayer regarding this revelation."
+}
