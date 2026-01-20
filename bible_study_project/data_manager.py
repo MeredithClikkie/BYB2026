@@ -1,5 +1,20 @@
 # data_manager.py
 import requests
+import streamlit as st
+import data_manager as dm
+import json
+import os
+
+# Load saved progress from a file
+def load_progress():
+    if os.path.exists("progress.json"):
+        with open("progress.json", "r") as f:
+            return json.load(f)
+    return []
+
+# Initialize session state with saved data
+if "completed_books" not in st.session_state:
+    st.session_state.completed_books = load_progress()
 
 def get_bible_text(reference, trans="web"):
     try:
@@ -517,32 +532,35 @@ def get_auto_trivia(book, chapter):
         return []
 
 
-def get_gotquestions_url(book, chapter):
-    # GotQuestions usually uses a format like:
-    # https://www.gotquestions.org/Book-of-Genesis.html (for books)
-    # or specific articles for popular chapters.
-
-    # Clean the book name (replace spaces with hyphens)
-    formatted_book = book.replace(" ", "-")
-
-    # Base URL for the Book Overview
-    return f"https://www.gotquestions.org/Book-of-{formatted_book}.html"
-
-
-# A sample mapping - you can expand this for all 66 books
-BP_VIDEO_IDS = {
-    "Genesis": "G0fMsdSjC9Q",  # Overview: Genesis 1-11
-    "Exodus": "jH_aojNJM3E",  # Overview: Exodus 1-18
-    "Romans": "ej2-grduu_o",  # Overview: Romans 1-4
-    "Philippians": "oE9at4athAg",  # Overview: Philippians
+# Mapping of BibleProject YouTube IDs (Part 1 - expand as needed)
+BP_MAP = {
+    "Genesis": "GQI72THyO5I", "Exodus": "jH_aojNJM3E", "Leviticus": "IJ-FekWUZzE",
+    "Numbers": "tp5MIrMZFdc", "Deuteronomy": "q5QEj9K_8X8", "Joshua": "JqOqJlFF_eU",
+    "Judges": "kOYy8iCfZ4M", "Ruth": "0h1eoBeR4Jk", "1 Samuel": "QEJ8IT7C_yE",
+    "2 Samuel": "1Xm1B2Y6tS8", "Psalms": "j9phNEaPrv8", "Proverbs": "AzmYV8GNAIM",
+    "Isaiah": "d0A6Uchb1F8", "Jeremiah": "RSK78aejdqc", "Daniel": "9cba0QYp87E",
+    "Matthew": "3aybbV6o27Y", "Mark": "HGHqu9-DtXk", "Luke": "f6566L1L5I0",
+    "John": "G-2e99gm7f8", "Acts": "CGbNw855ksw", "Romans": "ej2-grduu_o",
+    "Philippians": "oE9at4athAg", "Revelation": "5nvVVcYD-0w"
 }
 
-
 def get_bible_project_url(book):
-    # If the book is in our list, return the YouTube link
-    video_id = BP_VIDEO_IDS.get(book)
+    video_id = BP_MAP.get(book)
     if video_id:
-        return f"https://www.youtube.com/watch?v={video_id}"
+        # Use the embed format which is often more compatible with apps
+        return f"https://www.youtube.com/embed/{video_id}"
+    return None
 
-    # Fallback: Search BibleProject for that book
-    return f"https://www.youtube.com/results?search_query=BibleProject+{book}+Overview"
+def get_gotquestions_url(book, chapter):
+    formatted_book = book.replace(" ", "-")
+    return f"https://www.gotquestions.org/Book-of-{formatted_book}.html"
+
+JOURNAL_PROMPTS = {
+    "Genesis": "How do you see God's sovereignty in the act of creation?",
+    "Exodus": "In what ways has God 'delivered' you from a personal 'Egypt'?",
+    "Romans": "How does Paul's explanation of grace change your view of your daily mistakes?",
+    "Philippians": "What is one specific situation where you can choose 'joy' over 'anxiety' today?",
+    "Acts": "How can you be a 'witness' in your current city or circle of influence?"
+}
+
+DEFAULT_PROMPT = "What is the Holy Spirit highlighting to you in this chapter?"
