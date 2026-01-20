@@ -25,8 +25,10 @@ if 'chap_choice' not in st.session_state: st.session_state.chap_choice = 1
 
 # --- 4. GLOBAL STATE SYNC (The Master variables) ---
 book_list = list(dm.BIBLE_CHAPTER_COUNTS.keys())
-book = st.session_state.book_choice
-chapter = st.session_state.chap_choice
+
+# We initialize these so the Welcome Page has them immediately
+book = st.session_state.get('book_choice', 'Genesis')
+chapter = st.session_state.get('chap_choice', 1)
 
 # --- 5. SIDEBAR NAVIGATION ---
 st.sidebar.header("📡 Mission Briefing")
@@ -143,33 +145,33 @@ if not st.session_state.run_analysis:
 
 # CASE B: THE ANALYSIS PAGE
 else:
-    # 1. FORCE THE SYNC: Re-parse the text box right now
+    # 1. THE MASTER SYNC: Update the "Global" memory from the text box
     import re
 
+    # We look at 'ref', which is the text currently in your 🎯 Target Reference box
     match = re.match(r"(.+?)\s+(\d+)", ref)
     if match:
-        current_book = match.group(1).strip()
-        current_chap = int(match.group(2))
-    else:
-        # Fallback to session state if regex fails
-        current_book = book
-        current_chap = chapter
+        new_book = match.group(1).strip()
+        new_chap = int(match.group(2))
 
-    # 2. FETCH TEXT (Using the raw 'ref' from sidebar)
+        # Only update and rerun if the book or chapter actually changed
+        if new_book != st.session_state.book_choice or new_chap != st.session_state.chap_choice:
+            st.session_state.book_choice = new_book
+            st.session_state.chap_choice = new_chap
+            st.rerun()  # This restarts the script so Section 4 picks up the NEW book
+
+    # 2. FETCH DATA using the updated variables
     raw_text = dm.get_bible_text(ref, trans=translation_code)
 
     if raw_text:
-        # 3. FETCH TIMELINE (Using the forced variables)
-        events, start_index = dm.get_timeline_events(current_book, current_chap)
+        # 3. FETCH TIMELINE
+        # 'book' and 'chapter' will now match the new session state thanks to the rerun
+        events, start_index = dm.get_timeline_events(book, chapter)
 
-        # 4. RENDER TIMELINE FIRST
         if events:
-            st.subheader(f"⏳ {current_book} {current_chap} Intelligence Timeline")
-            # We wrap it in a container to ensure it renders cleanly
+            st.subheader(f"⏳ {book} {chapter} Intelligence Timeline")
             with st.container():
                 timeline({"events": events, "start_at_slide": start_index}, height=450)
-        else:
-            st.warning("No specific historical intel found for this sector, but staying alert.")
 
         # 5. RENDER SCRIPTURE & AI ANALYSIS
         st.divider()

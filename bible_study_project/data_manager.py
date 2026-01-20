@@ -206,43 +206,33 @@ def get_master_data(wave_name, chapter="1"):
 
 def get_timeline_events(book, chapter):
     wave_data = get_master_data(book, chapter)
+    if not wave_data:
+        return [], 0
 
-    # 1. FETCH EVENTS (The Search Logic)
-    if wave_data:
-        # We look for a specific chapter first.
-        # If not found, we look for 'current_chapter' (Gospels)
-        # Finally, we fall back to 'All' (The General Era/Epistles)
-        events = wave_data.get(str(chapter))
-        if events is None:
-            events = wave_data.get("current_chapter")
-        if events is None:
-            events = wave_data.get("All", [])
-    else:
-        events = []
+    # 1. TRY SPECIFIC CHAPTER (e.g., Acts '1')
+    events = wave_data.get(str(chapter))
 
-    # 2. PERMANENT JOURNEYS (Expanded list to cover ALL Epistles)
-    # This list now matches the books in your Epistles Drawer
-    nt_travel_books = [
-        "Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians",
-        "Ephesians", "Philippians", "Colossians", "1 Thessalonians",
-        "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon"
-    ]
+    # 2. FALLBACK TO 'ALL' (e.g., Romans doesn't have a '1' key, but has 'All')
+    if events is None:
+        events = wave_data.get("All", [])
 
+    # Create a fresh copy so we don't pollute the master data
+    events = list(events)
+
+    # 3. ADD PERMANENT JOURNEYS
+    nt_travel_books = ["Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians",
+                       "Colossians"]
     if book in nt_travel_books:
-        journeys = [
+        events.extend([
             {"start_date": {"year": 46}, "display_date": "AD 46", "background": {"color": "#1b4f72"},
              "text": {"headline": "⛵ 1st Journey", "text": "Paul & Barnabas sent from Antioch."}},
             {"start_date": {"year": 59}, "display_date": "AD 59", "background": {"color": "#212f3d"},
              "text": {"headline": "⚓ Voyage to Rome", "text": "Paul travels as a prisoner."}}
-        ]
-        # Use extend to add the journeys to the book-specific events
-        events.extend(journeys)
+        ])
 
-    if not events:
-        return [], 0
+    if not events: return [], 0
 
-    # 3. THE REFRESH TRIGGER
-    # Sorting by year forces the timeline to redraw with new data
+    # 4. SORT (Ensures chronology works correctly)
     events = sorted(events, key=lambda x: x.get("start_date", {}).get("year", 0))
     return events, 0
 
