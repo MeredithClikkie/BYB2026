@@ -92,9 +92,35 @@ if not st.session_state.run_analysis:
     st.markdown("""<style>.stApp { background-color: #212121; color: white; font-family: monospace; }
         h1, h2, h3 { color: #FCE300 !important; text-transform: uppercase; }</style>""", unsafe_allow_html=True)
 
-    st.markdown(f"### Welcome to the Trench Study 📖")
-    st.info(f"💡 **Current Intel:** Ready to analyze {book} {chapter}.")
+    # 1. DEFINE THE COLUMNS HERE
+    col1, col2 = st.columns([2, 1])
 
+    # 2. PUT YOUR TEXT IN COL1
+    with col1:
+        st.markdown("""
+            ### Welcome to the Trench Study 📖
+            This AI tool helps you navigate the layers of Scripture.
+
+            **Mission Protocol:**
+            1. Initialize reference in sidebar.
+            2. Choose translation version.
+            3. Deploy **'Analyze Scripture'**.
+            """, unsafe_allow_html=True)
+
+        st.info(f"💡 **Status:** Ready to analyze {book} {chapter}. Stay low.💡")
+
+    # 3. PUT YOUR IMAGE IN COL2
+    with col2:
+        try:
+            # This try block handles the "Bad filename" error by falling back to the URL
+            st.image("welcome_torch.jpg", use_container_width=True)
+        except:
+            st.image("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?q=80&w=1000")
+
+        st.markdown("<div style='text-align: center; color: #FCE300;'>‖—‖ keep your torch lit ‖—‖</div>",
+                    unsafe_allow_html=True)
+
+    st.divider()
     # Normalize the book name for dictionary lookups
     clean_book = book.strip().title()
 
