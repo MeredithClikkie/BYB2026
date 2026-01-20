@@ -564,3 +564,25 @@ JOURNAL_PROMPTS = {
 }
 
 DEFAULT_PROMPT = "What is the Holy Spirit highlighting to you in this chapter?"
+
+
+# In data_manager.py
+READING_PLANS = {
+    "Chronological": {
+        "Day 1": "Genesis 1-3",
+        "Day 2": "Genesis 4-7",
+        # ...
+    },
+    "New Testament (90 Days)": {
+        "Day 1": "Matthew 1-2",
+        "Day 2": "Matthew 3-4",
+    }
+}
+
+# In biblestudy_gpp.py Sidebar
+st.sidebar.divider()
+plan_choice = st.sidebar.selectbox("Select Reading Plan", list(dm.READING_PLANS.keys()))
+day_num = st.sidebar.number_input("Day", 1, 365, value=1)
+
+current_reading = dm.READING_PLANS[plan_choice].get(f"Day {day_num}")
+st.sidebar.info(f"📅 Today's Goal: **{current_reading}**")

@@ -62,6 +62,10 @@ show_stats = st.sidebar.checkbox("Show AI Stats", value=True)
 if st.sidebar.button("🔍 Analyze Scripture"):
     st.session_state.run_analysis = True
 
+if st.sidebar.button("💎 Ned's Insight"):
+    proverbs = ["Proverbs 3:5", "Proverbs 16:3", "Proverbs 18:10"]
+    st.toast(f"Ned says: Check out {random.choice(proverbs)}!", icon="✨")
+
 # Visual Config for NLP
 options = {
     "ents": ["GOD", "PERSON", "PEOPLE GROUPS", "GPE", "tøp"],
@@ -153,6 +157,24 @@ if not st.session_state.run_analysis:
                 st.video(bp_url)
                 st.caption("Video not loading? [Watch on YouTube](" + bp_url.replace("embed/", "watch?v=") + ")")
 
+    with tab3:
+        st.divider()
+        st.subheader("🎧 Atmosphere: Lofi Study Beats")
+
+        # Toggle for the music so it doesn't play automatically
+        show_audio = st.toggle("Enable Background Study Music")
+
+        if show_audio:
+            # Using a reliable 24/7 Christian Lofi stream
+            lofi_url = "https://www.youtube.com/watch?v=qXPoj_VYb3U"
+
+            # We use st.video here because it handles YouTube live streams better than st.audio
+            # Setting the height small keeps it discreet
+            st.video(lofi_url)
+            st.caption("Now Playing: 24/7 Christian Lofi Radio")
+        else:
+            st.info("Switch the toggle above to play instrumental study beats.")
+
 
     # --- TAB 4: JOURNAL & PROGRESS ---
     with tab4: # JOURNAL
@@ -186,22 +208,23 @@ if not st.session_state.run_analysis:
             st.info(f"**Reflect on {book}:**\n\n{prompt}")
 
         st.divider()
+        # Inside your Journal Tab (tab4)
+        st.subheader("📝 Life Application Study Notes (SOAP)")
 
-        # --- NOTEPAD SECTION ---
-        st.subheader(f"Notes for {book} {chapter}")
-        user_notes = st.text_area(
-            "Write your observations or prayers here:",
-            placeholder="Type here...",
-            height=300,
-            key=f"note_{book}_{chapter}"  # Unique key per chapter
-        )
+        col_s, col_o = st.columns(2)
+        with col_s:
+            st.text_area("📖 Scripture", placeholder="Copy the verse that stood out...", key=f"soap_s_{book}_{chapter}")
+        with col_o:
+            st.text_area("🧐 Observation", placeholder="What is happening in this text?", key=f"soap_o_{book}_{chapter}")
 
-        if st.button("💾 Save Notes to Local File"):
-            # This saves a text file on your computer named 'Bible_Notes.txt'
-            with open("Bible_Notes.txt", "a", encoding="utf-8") as f:
-                f.write(f"\n--- {book} {chapter} ---\n")
-                f.write(user_notes + "\n")
-            st.success(f"Notes for {book} {chapter} saved to Bible_Notes.txt!")
+        col_a, col_p = st.columns(2)
+        with col_a:
+            st.text_area("💡 Application", placeholder="How does this change my life today?",
+                         key=f"soap_a_{book}_{chapter}")
+        with col_p:
+            st.text_area("🙏 Prayer", placeholder="Write a short prayer regarding this text...",
+                         key=f"soap_p_{book}_{chapter}")
+
 
 # CASE B: THE ANALYSIS PAGE
 else:
