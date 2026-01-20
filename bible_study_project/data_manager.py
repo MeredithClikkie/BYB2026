@@ -44,197 +44,121 @@ BP_MAP = {
     "Matthew": "3aybbV6o27Y", "Mark": "HGHqu9-DtXk", "Luke": "f6566L1L5I0", "John": "G-2e99gm7f8"
 }
 
+import requests
 
-# --- FUNCTIONS ---
 def get_bible_text(reference, trans="web"):
     try:
         url = f"https://bible-api.com/{reference}?translation={trans}"
         r = requests.get(url)
         return r.json()['text'] if r.status_code == 200 else "Text not found."
     except:
-        return "Connection error."
+        return "Connection error. Check your internet."
 
 
 def get_master_data(wave_name, chapter="1"):
     """
     Acts as the Intelligence Database. Returns specific dates based on the Book.
     """
-    # Drawer 1: Genesis (Detailed by Chapter)
+    # Force the wave_name to Title Case immediately
+    wave_name = wave_name.strip().title()
+
+    # --- OLD TESTAMENT DRAWERS ---
     if wave_name == "Genesis":
         return {
-            "1": [{"start_date": {"year": -4004}, "display_date": "Day 1-3", "background": {"color": "#000000"},
-                   "media": {
-                       "url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/The_Creation_of_Light_by_Gustave_Dore.jpg",
-                       "type": "image"},
-                   "text": {"headline": "Forming the World", "text": "<b>Day 1:</b> Light out of Darkness."}}],
-            "7": [{"start_date": {"year": -2348}, "display_date": "2348 BC", "background": {"color": "#1a365d"},
-                   "text": {"headline": "The Great Flood", "text": "Masoretic timeline calculated by Ussher."}}]
+            "1": [{"start_date": {"year": -4004}, "display_date": "Creation", "background": {"color": "#000000"},
+                   "text": {"headline": "Forming the World", "text": "Day 1-3: Light out of Darkness."}}],
+            "7": [{"start_date": {"year": -2348}, "display_date": "2348 BC",
+                   "text": {"headline": "The Great Flood", "text": "Noah's Ark."}}]
         }
 
-    # Drawer 2: Exodus (Detailed by Chapter)
     elif wave_name == "Exodus":
-        return {
-            "3": [{"start_date": {"year": -1446}, "display_date": "1446 BC", "background": {"color": "#744210"},
-                   "text": {"headline": "🔥 The Burning Bush", "text": "15th-century date based on 1 Kings 6:1."}}]
-        }
+        return {"3": [{"start_date": {"year": -1446}, "display_date": "1446 BC",
+                       "text": {"headline": "🔥 The Burning Bush", "text": "The call of Moses."}}]}
 
-    # Drawer 3: The Law (General Era Intel)
-    elif wave_name in ["Leviticus", "Numbers", "Deuteronomy"]:
-        return {"All": [{"start_date": {"year": -1445}, "display_date": "1445 BC", "background": {"color": "#2D3748"},
-                         "text": {"headline": f"The Law: {wave_name}",
-                                  "text": "Israel receives instructions at Mt. Sinai."}}]}
+    # --- THE GOSPELS (Unified Logic) ---
+    elif wave_name in ["Matthew", "Mark", "Luke", "John"]:
+        all_events = []
+        # Nativity Logic
+        if (wave_name in ["Matthew", "Luke"]) and str(chapter) == "2":
+            all_events.append({"start_date": {"year": -4}, "display_date": "4 BC", "background": {"color": "#1a202c"},
+                               "text": {"headline": "✨ The Nativity", "text": "The birth of Jesus in Bethlehem."}})
 
-    # Drawer: Era of Judges (Joshua through Ruth)
-    elif wave_name in ["Joshua", "Judges", "Ruth"]:
-        return {"All": [{"start_date": {"year": -1400}, "display_date": "c. 1400 BC", "background": {"color": "#4a5568"},
-                 "text": {"headline": "Era of the Judges",
-                          "text": "Israel enters the land and is led by various judges."}}]}
+        # Passion Week Logic
+        passion_chapters = {"Matthew": "27", "Mark": "15", "Luke": "23", "John": "19"}
+        if str(chapter) == passion_chapters.get(wave_name):
+            all_events.append({"start_date": {"year": 30}, "display_date": "AD 30", "background": {"color": "#000000"},
+                               "text": {"headline": "🌑 The Crucifixion", "text": "The sacrifice at Calvary."}})
 
-    # Drawer: Era of the Monarchy (Samuel through Chronicles, plus Wisdom Books)
-    elif wave_name in ["1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Psalms",
-                       "Proverbs", "Ecclesiastes", "Song of Solomon"]:
-        return {
-            "All": [{"start_date": {"year": -1010}, "display_date": "c. 1010 BC", "background": {"color": "#9a7d0a"},
-                     "text": {"headline": "The United Monarchy",
-                              "text": "The golden age of Israel under David and Solomon."}}]}
+        # Fallback: General Ministry Era
+        if not all_events:
+            all_events.append({"start_date": {"year": 26}, "display_date": "AD 26",
+                               "text": {"headline": f"Ministry: {wave_name}",
+                                        "text": "The life and ministry of Christ."}})
+        return {"All": all_events}
 
-    # Drawer: The Prophets (Isaiah through Malachi)
-    elif wave_name in ["Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah",
-                       "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi"]:
-        # Specific Chapter Intel: Daniel's Exile
-        if wave_name == "Daniel" and str(chapter) == "1":
-            return {"1": [{
-                "start_date": {"year": -605},
-                "display_date": "605 BC",
-                "background": {"color": "#1a202c"},
-                "text": {"headline": "🧱 The First Deportation", "text": "Daniel and his friends are taken to Babylon."}
-            }]}
-
-        return {"All": [
-            {"start_date": {"year": -740}, "display_date": "8th-5th Century BC", "background": {"color": "#17202a"},
-             "text": {"headline": "The Prophetic Voice",
-                      "text": "God speaks to His people before and during the Exile."}}]}
-
-        # --- NEW TESTAMENT DRAWERS ---
-
-    # 1. Drawer: Church History (Acts)
+    # --- THE CHURCH AGE (Acts & Epistles) ---
     elif wave_name == "Acts":
         return {
-            "1": [{
-                "start_date": {"year": 30},
-                "display_date": "AD 30",
-                "background": {"color": "#2D3748"},
-                "text": {"headline": "The Ascension", "text": "Jesus ascends; the disciples wait in Jerusalem."}
-            }],
-            "All": [{
-                "start_date": {"year": 33},
-                "display_date": "1st Century AD",
-                "background": {"color": "#2D3748"},
-                "text": {"headline": "The Early Church", "text": "The spread of the Gospel from Jerusalem to Rome."}
-            }]
+            "1": [{"start_date": {"year": 30}, "display_date": "AD 30",
+                   "text": {"headline": "The Ascension", "text": "Jesus ascends; the disciples wait."}}],
+            "All": [{"start_date": {"year": 33}, "display_date": "AD 33",
+                     "text": {"headline": "The Early Church", "text": "The spread of the Gospel begins."}}]
         }
 
-    # 2. Drawer: The Epistles (All of them)
+    elif wave_name == "Revelation":
+        return {"All": [{
+            "start_date": {"year": 95},
+            "display_date": "AD 95",
+            "background": {"color": "#FCE300"},
+            "text": {"headline": "📬 CURRENT INTEL: Revelation", "text": "Written from Patmos."}
+        }]}
+
+    # Expand this list to include EVERY letter in the NT
     elif wave_name in [
         "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians",
         "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians",
         "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James",
         "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude"
     ]:
+        intel = {
+            "Galatians": {"year": 48, "loc": "Antioch", "desc": "Regarding the Gospel of Grace."},
+            "Romans": {"year": 57, "loc": "Corinth", "desc": "Paul's masterwork on salvation."},
+            "Ephesians": {"year": 61, "loc": "Rome", "desc": "Written during house arrest."},
+            "Philippians": {"year": 61, "loc": "Rome", "desc": "The Epistle of Joy."},
+            "Colossians": {"year": 61, "loc": "Rome", "desc": "Focusing on the supremacy of Christ."},
+            "Hebrews": {"year": 67, "loc": "Unknown", "desc": "The supremacy of Jesus as High Priest."}
+        }
+        # ctx finds the book in the list above, or uses a default AD 55 date for others
+        ctx = intel.get(wave_name, {"year": 55, "loc": "Ephesus/Macedonia", "desc": "Apostolic instructions."})
+
         return {"All": [{
-            "start_date": {"year": 55},
-            "display_date": "c. AD 55",
-            "background": {"color": "#FCE300"},
-            "text": {"headline": f"Mission Intel: {wave_name}", "text": "Apostolic instructions to the early Church."}
+            "start_date": {"year": ctx["year"]}, "display_date": f"AD {ctx['year']}",
+            "background": {"color": "#FCE300"},  # Yellow focus color
+            "text": {"headline": f"📬 CURRENT INTEL: {wave_name}",
+                     "text": f"<b>Written from:</b> {ctx['loc']}<br>{ctx['desc']}"}
         }]}
-
-    # 3. Drawer: The Apocalypse (Revelation)
-    elif wave_name == "Revelation":
-        return {"All": [{
-            "start_date": {"year": 95},
-            "display_date": "c. AD 95",
-            "background": {"color": "#44337a"},
-            "text": {"headline": "The Apocalypse", "text": "John's vision on the Island of Patmos."}
-        }]}
-
-    # The Silent Years (Between Malachi and Matthew)
-    elif wave_name == "Intertestamental":
-        return {"All": [{
-            "start_date": {"year": -400},
-            "display_date": "400 BC - 4 BC",
-            "text": {"headline": "The Silent Years", "text": "The period between the Old and New Testaments."}
-        }]}
-
-        # Drawer 5: The Gospels (Unified Logic)
-    elif wave_name in ["Matthew", "Mark", "Luke", "John"]:
-        all_events = []
-
-        # 1. Check for Nativity in Matthew/Luke Chapter 2
-        if (wave_name == "Matthew" and str(chapter) == "2") or (wave_name == "Luke" and str(chapter) == "2"):
-            all_events.append({
-                "start_date": {"year": -4},
-                "display_date": "4 BC",
-                "background": {"color": "#1a202c"},
-                "media": {
-                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/The_Nativity_by_Federico_Barocci.jpg/440px-The_Nativity_by_Federico_Barocci.jpg",
-                    "type": "image"},
-                "text": {"headline": "✨ The Nativity", "text": "The birth of Jesus in Bethlehem."}
-            })
-
-        # 2. General Gospel Era (If not Ch. 2, or in Mark/John)
-        if not all_events:
-            all_events.append({
-                "start_date": {"year": 26},
-                "display_date": "AD 26",
-                "background": {"color": "#2d3748"},
-                "text": {"headline": f"The Life of Christ: {wave_name}",
-                         "text": "The ministry and historical context of Jesus."}
-            })
-
-        # Change the key from "current_chapter" to "All" to match your system
-        return {"All": all_events}
-
-        # Safety Net: Final Catch-all
-    return {
-        "All": [{
-            "start_date": {"year": 0},
-            "display_date": "General History",
-            "text": {"headline": f"{wave_name} Overview", "text": "Historical overview loading..."}
-        }]
-    }
-
 
 def get_timeline_events(book, chapter):
+    # This calls your 'drawer' system
     wave_data = get_master_data(book, chapter)
-    if not wave_data:
-        return [], 0
 
-    # 1. TRY SPECIFIC CHAPTER (e.g., Acts '1')
-    events = wave_data.get(str(chapter))
+    # 1. Look for chapter first, then the 'All' fallback (Important for Letters!)
+    events = list(wave_data.get(str(chapter), wave_data.get("All", [])))
 
-    # 2. FALLBACK TO 'ALL' (e.g., Romans doesn't have a '1' key, but has 'All')
-    if events is None:
-        events = wave_data.get("All", [])
-
-    # Create a fresh copy so we don't pollute the master data
-    events = list(events)
-
-    # 3. ADD PERMANENT JOURNEYS
-    nt_travel_books = ["Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians",
-                       "Colossians"]
+    # 2. Add Missionary Journeys (The 'Acts' fix)
+    nt_travel_books = ["Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians"]
     if book in nt_travel_books:
         events.extend([
-            {"start_date": {"year": 46}, "display_date": "AD 46", "background": {"color": "#1b4f72"},
-             "text": {"headline": "⛵ 1st Journey", "text": "Paul & Barnabas sent from Antioch."}},
-            {"start_date": {"year": 59}, "display_date": "AD 59", "background": {"color": "#212f3d"},
-             "text": {"headline": "⚓ Voyage to Rome", "text": "Paul travels as a prisoner."}}
+            {"start_date": {"year": 46}, "display_date": "AD 46", "background": {"color": "#1b4f72"}, "text": {"headline": "⛵ 1st Journey", "text": "Paul & Barnabas."}},
+            {"start_date": {"year": 59}, "display_date": "AD 59", "background": {"color": "#212f3d"}, "text": {"headline": "⚓ Voyage to Rome", "text": "Paul as a prisoner."}}
         ])
 
-    if not events: return [], 0
+    # 3. Sort and find the starting slide
+    events = sorted(events, key=lambda x: x["start_date"]["year"])
+    start_index = next((i for i, e in enumerate(events) if "CURRENT INTEL" in e["text"]["headline"]), 0)
+    return events, start_index
 
-    # 4. SORT (Ensures chronology works correctly)
-    events = sorted(events, key=lambda x: x.get("start_date", {}).get("year", 0))
-    return events, 0
+
 
 
 
