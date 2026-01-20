@@ -87,7 +87,6 @@ if col_b.button("🏠 Home"):
     st.rerun()
 
 # --- 7. PAGE RENDERING ---
-
 # CASE A: THE WELCOME PAGE
 if not st.session_state.run_analysis:
     st.markdown("""<style>.stApp { background-color: #212121; color: white; font-family: monospace; }
@@ -96,33 +95,113 @@ if not st.session_state.run_analysis:
     st.markdown(f"### Welcome to the Trench Study 📖")
     st.info(f"💡 **Current Intel:** Ready to analyze {book} {chapter}.")
 
-    t1, t2, t3, t4 = st.tabs(["📝 Trivia", "📚 Resources", "📓 Journal", "🎥 Video"])
+    # Normalize the book name for dictionary lookups
+    clean_book = book.strip().title()
 
-    with t1:
+    # Organized Tabs
+    t1, t2, t3, t4 = st.tabs(["📝 Trivia", "📚 Hangman", "📡 Resources", "📓 Journal"])
+
+    with t1:  # TRIVIA
         questions = dm.get_trivia_questions(book, chapter)
-        if not questions: questions = dm.get_auto_trivia(book, chapter)
-        if questions:
-            q = questions[st.session_state.current_q % len(questions)]
-            st.write(f"**Question:** {q['question']}")
-            ans = st.radio("Options:", q['options'], key="trivia_radio")
-            if st.button("Submit Answer"):
-                if ans == q['answer']:
-                    st.success("Correct!")
+        if not questions:
+            questions = dm.get_auto_trivia(book, chapter)
+
+        if questions and not st.session_state.game_over:
+            q = questions[st.session_state.current_q]
+            st.subheader(f"Question {st.session_state.current_q + 1}")
+            st.write(f"### {q['question']}")
+
+            with st.form("trivia_form"):
+                choice = st.radio("Answer:", q['options'])
+                submitted = st.form_submit_button("Submit Answer")
+
+            if submitted:
+                if choice == q['answer']:
+                    st.success(f"Correct! {q.get('reference', '')}")
+                    st.session_state.score += 1
                 else:
-                    st.error(f"Incorrect. The answer is {q['answer']}")
+                    st.error(f"Wrong! Answer: {q['answer']}")
 
-    with t2:
-        st.link_button("Bible Hub Interlinear", f"https://biblehub.com/{book.lower().replace(' ', '_')}/{chapter}.htm")
+                if st.session_state.current_q + 1 < len(questions):
+                    st.session_state.current_q += 1
+                else:
+                    st.session_state.game_over = True
 
-    with t3:
-        st.text_area("📖 Scripture (S)", placeholder=dm.LASB_PROMPTS['S'])
-        st.text_area("🧐 Observation (O)", placeholder=dm.LASB_PROMPTS['O'])
+                st.button("Continue to Next Question")  # Triggers rerun on click
 
-    with t4:
-        # Pulls from your BP_MAP in data_manager
-        v_id = dm.BP_MAP.get(book)
-        if v_id:
-            st.video(f"https://www.youtube.com/watch?v={v_id}")
+    with t2:  # HANGMAN
+        if st.button("Generate New Word from Chapter"):
+            data = dm.generate_auto_game(book, chapter)
+            if data and data['game_words']:
+                st.session_state.hangman_word = random.choice(data['game_words'])
+                st.session_state.guessed_letters = []
+                st.session_state.attempts_left = 6
+                st.rerun()
+
+        if 'hangman_word' in st.session_state:
+            word = st.session_state.hangman_word
+            display = [l if l in st.session_state.guessed_letters else "_" for l in word]
+            st.subheader(" ".join(display))
+            char = st.text_input("Guess a letter:", max_chars=1, key="hg_input").upper()
+            if st.button("Submit Guess") and char:
+                if char not in st.session_state.guessed_letters:
+                    st.session_state.guessed_letters.append(char)
+                    if char not in word: st.session_state.attempts_left -= 1
+                st.rerun()
+            st.write(f"Lives: {'❤️' * st.session_state.attempts_left}")
+
+    with t3:  # RESOURCES
+        st.header(f"Mission Assets: {book}")
+        r_col1, r_col2 = st.columns(2)
+
+        with r_col1:
+            st.subheader("Quick Links")
+            st.link_button("GotQuestions Overview", dm.get_gotquestions_url(book, chapter), use_container_width=True)
+            bh_url = f"https://biblehub.com/{book.lower().replace(' ', '_')}/{chapter}.htm"
+            st.link_button("Bible Hub Interlinear", bh_url, use_container_width=True)
+
+            st.divider()
+            st.subheader("🎧 Atmosphere")
+            show_audio = st.toggle("Enable Lofi Study Music")
+            if show_audio:
+                st.video("https://www.youtube.com/watch?v=qXPoj_VYb3U")
+
+        with r_col2:
+            st.subheader("BibleProject Briefing")
+            bp_url = dm.get_bible_project_url(book)
+            if bp_url:
+                st.video(bp_url)
+
+    with t4:  # JOURNAL & PROGRESS
+        st.header("📓 Tactical Journal & Mission Progress")
+
+        prog_col, prompt_col = st.columns([1, 1])
+        with prog_col:
+            st.subheader("Progress Tracker")
+            all_books = list(dm.BIBLE_CHAPTER_COUNTS.keys())
+            read_books = st.multiselect("Completed Books:", options=all_books,
+                                        default=st.session_state.get("completed_books", []), key="prog_track")
+            st.session_state.completed_books = read_books
+            st.progress(len(read_books) / 66)
+            st.write(f"Objective: **{round((len(read_books) / 66) * 100, 1)}%** complete.")
+
+        with prompt_col:
+            st.subheader("Chapter Insight")
+            # Uses the standardized LASB_PROMPTS for the book or a default
+            insight = dm.LASB_PROMPTS.get('O', "Analyze the current context and recorded history.")
+            st.info(f"**Focus for {book}:**\n\n{insight}")
+
+        st.divider()
+        st.subheader("📝 Life Application Study Notes (S.O.A.P.)")
+
+        # Consistent Key Naming for the Text Areas
+        s1, s2 = st.columns(2)
+        with s1:
+            st.text_area("📖 Scripture (S)", placeholder=dm.LASB_PROMPTS.get('S'), key=f"soap_s_{book}_{chapter}")
+            st.text_area("🛠️ Application (A)", placeholder=dm.LASB_PROMPTS.get('A'), key=f"soap_a_{book}_{chapter}")
+        with s2:
+            st.text_area("🧐 Observation (O)", placeholder=dm.LASB_PROMPTS.get('O'), key=f"soap_o_{book}_{chapter}")
+            st.text_area("🙏 Prayer (P)", placeholder=dm.LASB_PROMPTS.get('P'), key=f"soap_p_{book}_{chapter}")
 
 # CASE B: THE ANALYSIS PAGE
 else:
